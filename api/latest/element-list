@@ -1,0 +1,8 @@
+spring.caches.autoconfigure
+spring.caches.backend
+spring.caches.backend.caffeine
+spring.caches.backend.properties.tree
+spring.caches.backend.simple
+spring.caches.backend.simple.stats
+spring.caches.backend.system
+spring.caches.metrics.autoconfigure

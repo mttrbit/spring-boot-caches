@@ -1,1 +1,0 @@
-# Spring Caches Metrics Autoconfigure
