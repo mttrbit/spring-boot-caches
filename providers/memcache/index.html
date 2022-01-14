@@ -13,21 +13,21 @@
         <meta name="author" content="Sebastian Kaiser">
       
       
-        <link rel="canonical" href="https://mttrbit.github.io/spring-boot-caches/best_practices/">
+        <link rel="canonical" href="https://mttrbit.github.io/spring-boot-caches/providers/memcache/">
       
-      <link rel="icon" href="../images/flask.png">
+      <link rel="icon" href="../../images/flask.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
     
     
       
-        <title>Best Practices - Spring Boot Caches</title>
+        <title>Memcache - Spring Boot Caches</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.db9e7362.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
         
       
     
@@ -42,7 +42,7 @@
     
     
     
-      <link rel="stylesheet" href="../css/style.css">
+      <link rel="stylesheet" href="../../css/style.css">
     
     
       
@@ -63,7 +63,7 @@
     <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="indigo">
   
     
-    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
       <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#best-practices" class="md-skip">
+        <a href="#memcache-cache-provider" class="md-skip">
           Skip to content
         </a>
       
@@ -86,7 +86,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Spring Boot Caches" class="md-header__button md-logo" aria-label="Spring Boot Caches" data-md-component="logo">
+    <a href="../.." title="Spring Boot Caches" class="md-header__button md-logo" aria-label="Spring Boot Caches" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 22a3 3 0 0 1-3-3c0-.6.18-1.16.5-1.63L9 7.81V6a1 1 0 0 1-1-1V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v1.81l5.5 9.56c.32.47.5 1.03.5 1.63a3 3 0 0 1-3 3H6m-1-3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1c0-.21-.07-.41-.18-.57l-2.29-3.96L14 17l-5.07-5.07-3.75 6.5c-.11.16-.18.36-.18.57m8-9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
@@ -105,7 +105,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Best Practices
+              Memcache
             
           </span>
         </div>
@@ -208,7 +208,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Spring Boot Caches" class="md-nav__button md-logo" aria-label="Spring Boot Caches" data-md-component="logo">
+    <a href="../.." title="Spring Boot Caches" class="md-nav__button md-logo" aria-label="Spring Boot Caches" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 22a3 3 0 0 1-3-3c0-.6.18-1.16.5-1.63L9 7.81V6a1 1 0 0 1-1-1V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v1.81l5.5 9.56c.32.47.5 1.03.5 1.63a3 3 0 0 1-3 3H6m-1-3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1c0-.21-.07-.41-.18-.57l-2.29-3.96L14 17l-5.07-5.07-3.75 6.5c-.11.16-.18.36-.18.57m8-9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1z"/></svg>
@@ -240,7 +240,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Overview
       </a>
     </li>
@@ -253,21 +253,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../best_practices/" class="md-nav__link">
         Best Practices
       </a>
-      
     </li>
   
 
@@ -280,7 +270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/latest/" class="md-nav__link">
+      <a href="../../api/latest/" class="md-nav__link">
         🔗 Javadoc
       </a>
     </li>
@@ -293,14 +283,16 @@
 
   
   
+    
+  
   
     
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       
       
@@ -323,7 +315,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../providers/simple/" class="md-nav__link">
+      <a href="../simple/" class="md-nav__link">
         Simple
       </a>
     </li>
@@ -337,7 +329,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../providers/caffeine/" class="md-nav__link">
+      <a href="../caffeine/" class="md-nav__link">
         Caffeine
       </a>
     </li>
@@ -349,11 +341,21 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../providers/memcache/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Memcache
       </a>
+      
     </li>
   
 
@@ -373,7 +375,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         Contributing
       </a>
     </li>
@@ -388,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         Change Log
       </a>
     </li>
@@ -425,7 +427,8 @@
               
                 
                 
-                <h1 id="best-practices">Best practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h1>
+                <h1 id="memcache-cache-provider">Memcache Cache Provider<a class="headerlink" href="#memcache-cache-provider" title="Permanent link">&para;</a></h1>
+<p>To be defined.</p>
                 
               
               
@@ -450,7 +453,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview" rel="prev">
+        <a href="../caffeine/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Caffeine" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -459,20 +462,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Overview
+              Caffeine
             </div>
           </div>
         </a>
       
       
         
-        <a href="../providers/simple/" class="md-footer__link md-footer__link--next" aria-label="Next: Simple" rel="next">
+        <a href="../../CONTRIBUTING/" class="md-footer__link md-footer__link--next" aria-label="Next: Contributing" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Simple
+              Contributing
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -517,10 +520,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.top", "navigation.sections"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.top", "navigation.sections"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.8397ff9e.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.1e84347e.min.js"></script>
       
     
   </body>
