@@ -1,0 +1,7 @@
+description = "Starter for using Spring Caches"
+
+dependencies {
+    api(project(":spring-caches-platform"))
+    api(project(":spring-caches-autoconfigure"))
+    api(project(":spring-caches-metrics-autoconfigure"))
+}

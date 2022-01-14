@@ -1,0 +1,10 @@
+apply plugin: "ru.vyarus.quality"
+
+dependencies {
+    implementation deps.commonsCollections4
+    //implementation deps.problem
+}
+
+quality {
+    pmd = false
+}

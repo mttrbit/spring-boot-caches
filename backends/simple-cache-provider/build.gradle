@@ -1,0 +1,21 @@
+apply plugin: "ru.vyarus.quality"
+
+dependencies {
+    annotationProcessor deps.autoService
+    implementation project(":spring-caches-platform")
+    implementation deps.springContext
+    implementation deps.autoService
+    implementation deps.autoServiceAnnotations
+
+    api deps.springBootStarter
+    api deps.springBootActuator
+
+
+    testImplementation deps.springBootStarterWebflux
+    testImplementation deps.springBootActuatorAutoconfigure
+    testImplementation project(":spring-caches-autoconfigure")
+    testImplementation project(":spring-caches-metrics-autoconfigure")
+    testImplementation deps.assertjCore
+    testImplementation deps.springBootStarterTest
+    testImplementation deps.springBootTest
+}

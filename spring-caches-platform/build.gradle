@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+quality {
+    pmd = false
+}
+
+dependencies {
+    annotationProcessor deps.autoService
+    testAnnotationProcessor deps.autoService
+    implementation deps.autoService
+
+    api deps.autoServiceAnnotations
+    api deps.micrometerCore
+
+    implementation deps.springContext
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation deps.assertjCore
+    testImplementation 'org.mockito:mockito-core:4.2.0'
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}

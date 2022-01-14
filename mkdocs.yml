@@ -1,0 +1,68 @@
+site_name: Spring Boot Caches
+repo_name: mttrbit/spring-boot-caches
+repo_url: https://github.com/mttrbit/spring-boot-caches
+site_url: https://mttrbit.github.io/spring-boot-caches
+site_description: 'An alternative multi caching solution for Spring Boot'
+site_author: Sebastian Kaiser
+edit_uri: ""
+copyright: Copyright &copy; 2022 Sebastian Kaiser
+
+extra_css:
+  - css/style.css
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - admonition
+  - pymdownx.details
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/mttrbit/spring-boot-caches
+      name: Spring Boot Caches on GitLab
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/flask
+  favicon: images/flask.png
+  features:
+    - navigation.top
+    - navigation.sections
+  #    - navigation.expand
+  #    - navigation.tabs
+
+  palette:
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+
+    # Light mode
+    - purple: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: indigo
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+
+nav:
+  - Overview: index.md
+  - Best Practices: best_practices.md
+  - 🔗 Javadoc: api/latest/
+  - Cache Backends:
+      - Simple: providers/simple.md
+      - Caffeine: providers/caffeine.md
+      - Memcache: providers/memcache.md
+  - Contributing: CONTRIBUTING.md
+  - Change Log: CHANGELOG.md

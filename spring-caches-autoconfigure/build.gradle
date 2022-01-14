@@ -1,0 +1,21 @@
+apply plugin: "ru.vyarus.quality"
+
+dependencies {
+    implementation project(":spring-caches-platform")
+    testImplementation project(":backends:caffeine-cache-provider")
+    implementation deps.commonsCollections4
+    // implementation deps.problem
+    implementation 'javax.cache:cache-api:1.1.1'
+    implementation deps.springBootActuator
+    compileOnly deps.springBootActuatorAutoconfigure
+    implementation deps.springBootStarterWeb
+
+    testImplementation 'javax.servlet:javax.servlet-api:4.0.1'
+
+    testImplementation deps.springBootStarterTest
+    testImplementation deps.springBootTest
+    testImplementation deps.springBootStarterWebflux
+
+    testImplementation deps.caffeine
+    testImplementation deps.springBootActuatorAutoconfigure
+}
