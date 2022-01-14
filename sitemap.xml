@@ -1,37 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://mttrbit.github.io/spring-boot-caches/</loc>
-         <lastmod>2022-01-14</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://mttrbit.github.io/spring-boot-caches/CHANGELOG/</loc>
-         <lastmod>2022-01-14</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://mttrbit.github.io/spring-boot-caches/CONTRIBUTING/</loc>
-         <lastmod>2022-01-14</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://mttrbit.github.io/spring-boot-caches/best_practices/</loc>
-         <lastmod>2022-01-14</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://mttrbit.github.io/spring-boot-caches/providers/caffeine/</loc>
-         <lastmod>2022-01-14</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://mttrbit.github.io/spring-boot-caches/providers/memcache/</loc>
-         <lastmod>2022-01-14</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://mttrbit.github.io/spring-boot-caches/providers/simple/</loc>
          <lastmod>2022-01-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
