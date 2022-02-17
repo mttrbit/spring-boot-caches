@@ -1,0 +1,26 @@
+apply plugin: "ru.vyarus.quality"
+
+dependencies {
+    annotationProcessor deps.autoService
+
+    implementation project(":spring-caches-platform")
+    // https://mvnrepository.com/artifact/com.amazonaws/elasticache-java-cluster-client/1.1.2
+    // provide your own implementation if you want to get rid off the CVEs
+    implementation "com.amazonaws:elasticache-java-cluster-client:1.1.2"
+    implementation "com.amazonaws:aws-java-sdk-elasticache:1.12.159"
+    implementation "org.springframework.data:spring-data-redis:2.6.1"
+    implementation deps.autoService
+    implementation deps.autoServiceAnnotations
+
+    api deps.springBootStarter
+    api deps.springBootActuator
+
+    testImplementation project(":spring-caches-autoconfigure")
+    testImplementation deps.assertjCore
+    testImplementation deps.springBootStarterTest
+    testImplementation deps.springBootTest
+}
+
+quality {
+    pmd = false
+}
