@@ -54,6 +54,11 @@ public class CaffeineBackendFactory extends BackendFactory {
                 settings.put(name, builder);
             }
         });
+
+        if (settings.isEmpty()) {
+            throw new RuntimeException("Invalid cache backend configuration!");
+        }
+
         return CaffeineCacheBackend.of(settings);
     }
 

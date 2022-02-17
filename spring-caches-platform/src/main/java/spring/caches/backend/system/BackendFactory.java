@@ -24,7 +24,7 @@ import spring.caches.backend.properties.tree.MultiCacheProperties;
 public abstract class BackendFactory {
 
     /**
-     * Creates a cache backend using a set of properties for use by a Spring Caches. Note that the
+     * Creates a cache backend using a set of properties for use by Spring Caches. Note that the
      * returned backend must be unique; there is one {@link CacheBackend} per
      * {@link org.springframework.cache.CacheManager}.
      */
