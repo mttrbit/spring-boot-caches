@@ -10,11 +10,14 @@ dependencies {
     implementation deps.springBootStarterWeb
 
     testImplementation 'javax.servlet:javax.servlet-api:4.0.1'
+    testImplementation 'com.thimbleware.jmemcached:jmemcached-core:1.0.0'
+    testImplementation 'redis.clients:jedis:3.7.1'
+//    testImplementation 'redis.clients:jedis:4.1.1'
 
     testImplementation deps.springBootStarterTest
     testImplementation deps.springBootTest
     testImplementation deps.springBootStarterWebflux
 
-    testImplementation(project(":backends:caffeine-cache-provider"))
+    testImplementation(project(":backends:elasticache-cache-provider"))
     testImplementation deps.springBootActuatorAutoconfigure
 }

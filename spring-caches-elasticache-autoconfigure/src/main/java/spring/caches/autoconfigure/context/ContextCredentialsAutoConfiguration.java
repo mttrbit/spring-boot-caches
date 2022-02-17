@@ -24,7 +24,6 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.EC2ContainerCredentialsProviderWrapper;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import io.awspring.cloud.core.config.AmazonWebserviceClientConfigurationUtils;
-import io.awspring.cloud.core.credentials.CredentialsProviderFactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -52,67 +51,68 @@ import static io.awspring.cloud.core.credentials.CredentialsProviderFactoryBean.
  * @author Agim Emruli
  * @author Maciej Walkowiak
  */
+// @checkstyle:off
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(AwsCredentialsProperties.class)
 @Import(ContextCredentialsAutoConfiguration.Registrar.class)
-@ConditionalOnClass(com.amazonaws.auth.AWSCredentialsProvider.class)
+@ConditionalOnClass(AWSCredentialsProvider.class)
 public class ContextCredentialsAutoConfiguration {
 
-	static class Registrar implements EnvironmentAware, ImportBeanDefinitionRegistrar {
+    static class Registrar implements EnvironmentAware, ImportBeanDefinitionRegistrar {
 
-		private Environment environment;
+        private Environment environment;
 
-		@Override
-		public void setEnvironment(Environment environment) {
-			this.environment = environment;
-		}
+        @Override
+        public void setEnvironment(Environment environment) {
+            this.environment = environment;
+        }
 
-		@Override
-		public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
-				BeanDefinitionRegistry registry) {
-			if (!registry.containsBeanDefinition(CREDENTIALS_PROVIDER_BEAN_NAME)) {
-				registry.registerBeanDefinition(CREDENTIALS_PROVIDER_BEAN_NAME,
-						resolveCredentialsProviderBeanDefinition(
-								resolveCredentialsProviders(awsCredentialsProperties())));
-				AmazonWebserviceClientConfigurationUtils.replaceDefaultCredentialsProvider(registry,
-						CredentialsProviderFactoryBean.CREDENTIALS_PROVIDER_BEAN_NAME);
-			}
-		}
+        @Override
+        public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
+                                            BeanDefinitionRegistry registry) {
+            if (!registry.containsBeanDefinition(CREDENTIALS_PROVIDER_BEAN_NAME)) {
+                registry.registerBeanDefinition(CREDENTIALS_PROVIDER_BEAN_NAME,
+                        resolveCredentialsProviderBeanDefinition(
+                                resolveCredentialsProviders(awsCredentialsProperties())));
+                AmazonWebserviceClientConfigurationUtils.replaceDefaultCredentialsProvider(registry,
+                        CREDENTIALS_PROVIDER_BEAN_NAME);
+            }
+        }
 
-		private BeanDefinition resolveCredentialsProviderBeanDefinition(List<AWSCredentialsProvider> providers) {
-			return providers.isEmpty()
-					? BeanDefinitionBuilder.genericBeanDefinition(DefaultAWSCredentialsProviderChain.class)
-							.getBeanDefinition()
-					: BeanDefinitionBuilder.genericBeanDefinition(AWSCredentialsProviderChain.class)
-							.addConstructorArgValue(providers).getBeanDefinition();
-		}
+        private BeanDefinition resolveCredentialsProviderBeanDefinition(List<AWSCredentialsProvider> providers) {
+            return providers.isEmpty()
+                    ? BeanDefinitionBuilder.genericBeanDefinition(DefaultAWSCredentialsProviderChain.class)
+                    .getBeanDefinition()
+                    : BeanDefinitionBuilder.genericBeanDefinition(AWSCredentialsProviderChain.class)
+                    .addConstructorArgValue(providers).getBeanDefinition();
+        }
 
-		private AwsCredentialsProperties awsCredentialsProperties() {
-			return Binder.get(this.environment).bindOrCreate(AwsCredentialsProperties.PREFIX,
-					AwsCredentialsProperties.class);
-		}
+        private AwsCredentialsProperties awsCredentialsProperties() {
+            return Binder.get(this.environment).bindOrCreate(AwsCredentialsProperties.PREFIX,
+                    AwsCredentialsProperties.class);
+        }
 
-		private List<AWSCredentialsProvider> resolveCredentialsProviders(AwsCredentialsProperties properties) {
-			List<AWSCredentialsProvider> providers = new ArrayList<>();
+        private List<AWSCredentialsProvider> resolveCredentialsProviders(AwsCredentialsProperties properties) {
+            List<AWSCredentialsProvider> providers = new ArrayList<>();
 
-			if (StringUtils.hasText(properties.getAccessKey()) && StringUtils.hasText(properties.getSecretKey())) {
-				providers.add(new AWSStaticCredentialsProvider(
-						new BasicAWSCredentials(properties.getAccessKey(), properties.getSecretKey())));
-			}
+            if (StringUtils.hasText(properties.getAccessKey()) && StringUtils.hasText(properties.getSecretKey())) {
+                providers.add(new AWSStaticCredentialsProvider(
+                        new BasicAWSCredentials(properties.getAccessKey(), properties.getSecretKey())));
+            }
 
-			if (properties.isInstanceProfile()) {
-				providers.add(new EC2ContainerCredentialsProviderWrapper());
-			}
+            if (properties.isInstanceProfile()) {
+                providers.add(new EC2ContainerCredentialsProviderWrapper());
+            }
 
-			if (properties.getProfileName() != null) {
-				providers.add(properties.getProfilePath() != null
-						? new ProfileCredentialsProvider(properties.getProfilePath(), properties.getProfileName())
-						: new ProfileCredentialsProvider(properties.getProfileName()));
-			}
+            if (properties.getProfileName() != null) {
+                providers.add(properties.getProfilePath() != null
+                        ? new ProfileCredentialsProvider(properties.getProfilePath(), properties.getProfileName())
+                        : new ProfileCredentialsProvider(properties.getProfileName()));
+            }
 
-			return providers;
-		}
+            return providers;
+        }
 
-	}
+    }
 
 }

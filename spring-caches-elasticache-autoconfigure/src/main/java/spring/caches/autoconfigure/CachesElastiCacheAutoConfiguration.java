@@ -18,17 +18,23 @@ import spring.caches.autoconfigure.context.ContextCredentialsAutoConfiguration;
 
 import static io.awspring.cloud.core.config.AmazonWebserviceClientConfigurationUtils.GLOBAL_CLIENT_CONFIGURATION_BEAN_NAME;
 
-@Import({ContextCredentialsAutoConfiguration.class})
-@ConditionalOnClass(com.amazonaws.services.elasticache.AmazonElastiCache.class)
-@AutoConfigureBefore({CachesAutoConfiguration.class})
+/**
+ * tbd.
+ */
+// @checkstyle:off
+@Import(ContextCredentialsAutoConfiguration.class)
+@ConditionalOnClass(AmazonElastiCache.class)
+@AutoConfigureBefore(CachesAutoConfiguration.class)
 @Configuration(proxyBeanMethods = false)
 public class CachesElastiCacheAutoConfiguration {
 
     private final ClientConfiguration clientConfiguration;
 
     public CachesElastiCacheAutoConfiguration(
-            @Qualifier(GLOBAL_CLIENT_CONFIGURATION_BEAN_NAME) ObjectProvider<ClientConfiguration> globalClientConfiguration,
-            @Qualifier("elastiCacheClientConfiguration") ObjectProvider<ClientConfiguration> elastiCacheClientConfiguration
+            @Qualifier(GLOBAL_CLIENT_CONFIGURATION_BEAN_NAME)
+                    ObjectProvider<ClientConfiguration> globalClientConfiguration,
+            @Qualifier("elastiCacheClientConfiguration")
+                    ObjectProvider<ClientConfiguration> elastiCacheClientConfiguration
     ) {
         this.clientConfiguration = elastiCacheClientConfiguration
                 .getIfAvailable(globalClientConfiguration::getIfAvailable);

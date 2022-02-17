@@ -21,6 +21,7 @@ import spring.caches.backend.system.DefaultPlatform;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -104,8 +105,8 @@ public class ElastiCacheBackendFactory extends BackendFactory implements Applica
     private List<CacheFactory> resolveCacheFactories(Map<String, ElastiCache> settings) {
         List<CacheFactory> cacheFactories = new LinkedList<>();
 
-        cacheFactories.add(new RedisCacheFactory(null, 60));
-        cacheFactories.add(new MemcachedCacheFactory(null, 60));
+        cacheFactories.add(new RedisCacheFactory(new HashMap<>(), 60));
+        cacheFactories.add(new MemcachedCacheFactory(new HashMap<>(), 60));
 
         return cacheFactories;
     }

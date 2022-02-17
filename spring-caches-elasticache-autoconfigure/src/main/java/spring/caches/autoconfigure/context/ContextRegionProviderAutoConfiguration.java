@@ -45,6 +45,7 @@ import spring.caches.autoconfigure.context.properties.AwsRegionProperties;
 @Configuration(proxyBeanMethods = false)
 @Import(ContextRegionProviderAutoConfiguration.Registrar.class)
 @EnableConfigurationProperties(AwsRegionProperties.class)
+@SuppressWarnings("HideUtilityClassConstructor")
 public class ContextRegionProviderAutoConfiguration {
 
     /**

@@ -3,12 +3,15 @@ apply plugin: "ru.vyarus.quality"
 dependencies {
     annotationProcessor deps.autoService
 
+    compileOnly 'redis.clients:jedis:3.7.1'
+
     implementation project(":spring-caches-platform")
     // https://mvnrepository.com/artifact/com.amazonaws/elasticache-java-cluster-client/1.1.2
     // provide your own implementation if you want to get rid off the CVEs
     implementation "com.amazonaws:elasticache-java-cluster-client:1.1.2"
     implementation "com.amazonaws:aws-java-sdk-elasticache:1.12.159"
     implementation "org.springframework.data:spring-data-redis:2.6.1"
+
     implementation deps.autoService
     implementation deps.autoServiceAnnotations
 

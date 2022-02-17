@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-spring.caches.metrics.autoconfigure.CachesMetricsAutoConfiguration
+spring.caches.autoconfigure.CachesElastiCacheAutoConfiguration

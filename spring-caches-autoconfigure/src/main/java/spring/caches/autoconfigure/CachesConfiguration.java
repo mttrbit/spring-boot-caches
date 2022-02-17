@@ -62,7 +62,10 @@ class CachesConfiguration {
             return cacheManagerMap;
         }
 
-        final List<CacheBackend> loadCacheBackends(MultiCacheProperties properties, ApplicationContext applicationContext) {
+        final List<CacheBackend> loadCacheBackends(
+                MultiCacheProperties properties,
+                ApplicationContext applicationContext
+        ) {
             List<CacheBackend> cacheBackends = new LinkedList<>();
             Platform.getBackendFactoryNames().forEach(f -> {
                 MultiCacheProperties filtered = properties.filterByFactoryName(f);

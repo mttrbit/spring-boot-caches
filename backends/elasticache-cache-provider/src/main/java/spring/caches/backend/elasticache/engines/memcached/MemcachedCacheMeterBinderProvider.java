@@ -11,6 +11,6 @@ public class MemcachedCacheMeterBinderProvider implements CacheMeterBinderProvid
 
     @Override
     public CacheMeterBinder getMeterBinder(MemcachedCache memcachedCache, Iterable<Tag> tags) {
-        return new MemcachedCacheMetrics(memcachedCache, memcachedCache.getName(), tags);
+        return new MemcachedCacheMetrics(memcachedCache, tags);
     }
 }

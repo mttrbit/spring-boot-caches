@@ -59,9 +59,7 @@ public class RedisCacheFactory extends AbstractCacheFactory<RedisConnectionFacto
 
 	@Override
 	protected void destroyConnectionClient(RedisConnectionFactory connectionClient) throws Exception {
-		if (connectionClient instanceof DisposableBean) {
-			((DisposableBean) connectionClient).destroy();
-		}
+
 	}
 
 	@Override

@@ -17,13 +17,12 @@
 package spring.caches.backend.elasticache.engines.memcached.stats;
 
 import org.checkerframework.checker.index.qual.NonNegative;
-import spring.caches.backend.simple.Cache;
 
 import java.util.concurrent.atomic.LongAdder;
 
 
 /**
- * A thread-safe {@link StatsCounter} implementation for use by {@link Cache} implementors.
+ * A thread-safe {@link StatsCounter} implementation for use by {@link spring.caches.backend.elasticache.engines.memcached.MemcachedCache} implementors.
  *
  * @author ben.manes@gmail.com (Ben Manes)
  */

@@ -25,43 +25,43 @@ import spring.caches.autoconfigure.context.ContextRegionProviderAutoConfiguratio
  *
  * @author Tom Gianos
  * @author Maciej Walkowiak
- * @since 2.0.2
  * @see ContextRegionProviderAutoConfiguration
+ * @since 2.0.2
  */
 @ConfigurationProperties(prefix = AwsRegionProperties.PREFIX)
 public class AwsRegionProperties {
 
-	/**
-	 * TODO Evaluate the possibility to change this prefix.
-	 *
-	 * The prefix used for AWS region related properties.
-	 */
-	public static final String PREFIX = "cloud.aws.region";
+    /**
+     * TODO Evaluate the possibility to change this prefix.
+     * <p>
+     * The prefix used for AWS region related properties.
+     */
+    public static final String PREFIX = "cloud.aws.region";
 
-	/**
-	 * Configures a static region for the application. Possible regions are (currently)
-	 * us-east-1, us-west-1, us-west-2, eu-west-1, eu-central-1, ap-southeast-1,
-	 * ap-southeast-1, ap-northeast-1, sa-east-1, cn-north-1 and any custom region
-	 * configured with own region meta data.
-	 */
-	private String staticRegion;
+    /**
+     * Configures a static region for the application. Possible regions are (currently)
+     * us-east-1, us-west-1, us-west-2, eu-west-1, eu-central-1, ap-southeast-1,
+     * ap-southeast-1, ap-northeast-1, sa-east-1, cn-north-1 and any custom region
+     * configured with own region meta data.
+     */
+    private String staticRegion;
 
-	public String getStatic() {
-		return this.staticRegion;
-	}
+    public String getStatic() {
+        return this.staticRegion;
+    }
 
-	public boolean isStatic() {
-		return StringUtils.hasText(this.staticRegion);
-	}
+    public boolean isStatic() {
+        return StringUtils.hasText(this.staticRegion);
+    }
 
-	public void setStatic(String staticRegion) {
-		// Feels like validation should be done to make sure this is a valid AWS region
-		// value. However current
-		// configuration in ContextRegionProviderAutoConfiguration doesn't seem to check
-		// property is valid before
-		// creating a bean definition. Leaving for now.
-		// - tgianos 11/26/2018
-		this.staticRegion = staticRegion;
-	}
+    public void setStatic(String staticRegion) {
+        // Feels like validation should be done to make sure this is a valid AWS region
+        // value. However current
+        // configuration in ContextRegionProviderAutoConfiguration doesn't seem to check
+        // property is valid before
+        // creating a bean definition. Leaving for now.
+        // - tgianos 11/26/2018
+        this.staticRegion = staticRegion;
+    }
 
 }
