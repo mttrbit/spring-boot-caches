@@ -34,7 +34,6 @@ public class ElastiCacheFactory {
 
 	private final String cacheClusterId;
 
-
 	private final List<? extends CacheFactory> cacheFactories;
 
 	public ElastiCacheFactory(AmazonElastiCache amazonElastiCache, String cacheClusterId, List<? extends CacheFactory> cacheFactories) {

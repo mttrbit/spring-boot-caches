@@ -78,7 +78,14 @@ class CachesConfiguration {
                         ((ApplicationContextAware) backendFactory).setApplicationContext(applicationContext);
                     }
 
-                    cacheBackends.add(backendFactory.create(filtered));
+                    try {
+                        CacheBackend cacheBackend = backendFactory.create(filtered);
+                        cacheBackends.add(cacheBackend);
+                    } catch() {
+                        LOG.warn("Could not create a cache backend for backend_factory="+backendFactory);
+                    }
+
+
                 }
             });
 

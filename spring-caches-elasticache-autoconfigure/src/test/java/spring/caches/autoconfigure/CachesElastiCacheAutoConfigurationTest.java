@@ -9,35 +9,40 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class CachesElastiCacheAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(CachesElastiCacheAutoConfiguration.class, CachesAutoConfiguration.class))
-            .withPropertyValues(
-                    "spring.caches.elasticache[0].names=sampleCacheOneLogical,sampleCacheTwoLogical",
-                    "spring.caches.elasticache[0].config.spec=recordStats,expiration=100"
-            );
+            .withConfiguration(AutoConfigurations.of(CachesElastiCacheAutoConfiguration.class, CachesAutoConfiguration.class));
+
+    @Test
+    void cacheManager_configuredNoCachesWithNoStack_configuresNoCacheManager() {
+        this.contextRunner.run(context -> {
+            String[] names = context.getBeanNamesForType(CacheManager.class);
+            assertThat(names).isEmpty();
+        });
+    }
 
     @Test
     void cacheManager_configuredMultipleCaches_configuresCacheManager() {
-        this.contextRunner.withUserConfiguration(MockCacheConfiguration.class).run(context -> {
-            CacheManager cacheManager = context.getBean("elasticacheCacheManager", CacheManager.class);
-            assertThat(cacheManager.getCacheNames().contains("sampleCacheOneLogical")).isTrue();
-            assertThat(cacheManager.getCacheNames().contains("sampleCacheTwoLogical")).isTrue();
-            assertThat(cacheManager.getCacheNames()).hasSize(2);
-        });
+        this.contextRunner
+                .withPropertyValues(
+                        "spring.caches.elasticache[0].names=sampleCacheOneLogical,sampleCacheTwoLogical",
+                        "spring.caches.elasticache[0].config.spec=recordStats,expiration=100"
+                )
+                .withUserConfiguration(MockCacheConfiguration.class).run(context -> {
+                    CacheManager cacheManager = context.getBean("elasticacheCacheManager", CacheManager.class);
+                    assertThat(cacheManager.getCacheNames().contains("sampleCacheOneLogical")).isTrue();
+                    assertThat(cacheManager.getCacheNames().contains("sampleCacheTwoLogical")).isTrue();
+                    assertThat(cacheManager.getCacheNames()).hasSize(2);
+                });
     }
 
     @Configuration(proxyBeanMethods = false)

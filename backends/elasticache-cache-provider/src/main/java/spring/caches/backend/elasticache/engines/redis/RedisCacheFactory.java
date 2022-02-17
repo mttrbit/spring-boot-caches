@@ -54,6 +54,7 @@ public class RedisCacheFactory extends AbstractCacheFactory<RedisConnectionFacto
 
 	@Override
 	public Cache createCache(String cacheName, String host, int port) throws Exception {
+		// TODO use recordStats flag to determine if builder.enableStatistics() method should be used.
 		return RedisCacheManager.builder(getConnectionFactory(host, port)).build().getCache(cacheName);
 	}
 
