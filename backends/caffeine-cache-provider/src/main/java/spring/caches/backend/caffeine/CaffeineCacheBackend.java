@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.binder.cache.CaffeineCacheMetrics;
 import org.springframework.boot.actuate.metrics.cache.CacheMeterBinderProvider;
 import org.springframework.cache.CacheManager;
 import spring.caches.backend.CacheBackend;
+import spring.caches.backend.system.CacheBackendInstantiationException;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -20,7 +21,14 @@ final class CaffeineCacheBackend extends CacheBackend {
         this.cacheManager = cacheManager;
     }
 
+    /**
+     * Creates a new instance of a {@code CacheBackend} using the provided configuration data.
+     * Throws a {@code CacheBackendInstantiationException} when the configuration data is invalid.
+     */
     public static CaffeineCacheBackend of(Map<String, Caffeine<Object, Object>> settings) {
+        if (settings.isEmpty()) {
+            throw new CacheBackendInstantiationException("Invalid cache backend configuration!");
+        }
         return new CaffeineCacheBackend(new CaffeineCacheManager(settings));
     }
 

@@ -67,25 +67,22 @@ class CachesConfiguration {
                 ApplicationContext applicationContext
         ) {
             List<CacheBackend> cacheBackends = new LinkedList<>();
-            Platform.getBackendFactoryNames().forEach(f -> {
-                MultiCacheProperties filtered = properties.filterByFactoryName(f);
+            Platform.getBackendFactoryNames().forEach(factoryName -> {
+                MultiCacheProperties filtered = properties.filterByFactoryName(factoryName);
                 if (filtered.isEmpty()) {
-                    LOG.warn("cache_backend=" + f + " not loaded -> configuration is missing.");
+                    LOG.warn("cache_backend=" + factoryName + " not loaded -> configuration is missing.");
                 } else {
-                    BackendFactory backendFactory = Platform.getBackend(f);
+                    BackendFactory backendFactory = Platform.getBackend(factoryName);
 
                     if (backendFactory instanceof ApplicationContextAware) {
                         ((ApplicationContextAware) backendFactory).setApplicationContext(applicationContext);
                     }
 
                     try {
-                        CacheBackend cacheBackend = backendFactory.create(filtered);
-                        cacheBackends.add(cacheBackend);
-                    } catch() {
-                        LOG.warn("Could not create a cache backend for backend_factory="+backendFactory);
+                        cacheBackends.add(backendFactory.create(filtered));
+                    } catch (RuntimeException e) {
+                        LOG.warn("Could not create a cache backend for backend_factory=" + backendFactory, e);
                     }
-
-
                 }
             });
 
