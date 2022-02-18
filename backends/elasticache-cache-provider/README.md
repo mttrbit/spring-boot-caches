@@ -22,7 +22,7 @@ New proposal:
 ```yml
 spring:
   caches:
-    ElastiCache:
+    elasticache:
       aws:
         credentials: ...
         region: ...

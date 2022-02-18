@@ -34,7 +34,7 @@ public class AwsCredentialsProperties {
      * <p>
      * The prefix used for AWS credentials related properties.
      */
-    public static final String PREFIX = "cloud.aws.credentials";
+    public static final String PREFIX = "spring.caches.elasticache.aws.credentials";
 
     /**
      * The access key to be used with a static provider.

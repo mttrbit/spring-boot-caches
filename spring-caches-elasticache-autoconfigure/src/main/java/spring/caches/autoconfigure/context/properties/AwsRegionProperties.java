@@ -36,7 +36,7 @@ public class AwsRegionProperties {
      * <p>
      * The prefix used for AWS region related properties.
      */
-    public static final String PREFIX = "cloud.aws.region";
+    public static final String PREFIX = "spring.caches.elasticache.aws.region";
 
     /**
      * Configures a static region for the application. Possible regions are (currently)
