@@ -70,9 +70,9 @@ final class ElastiCache {
 
     /**
      * Enables the accumulation of {@link CacheStats} during the operation of the cache. Without this
-     * {@link spring.caches.backend.elasticache.engines.memcached.MemcachedCache#stats} will return zero for all statistics. Note that recording statistics
-     * requires bookkeeping to be performed with each operation, and thus imposes a performance
-     * penalty on cache operation.
+     * {@link spring.caches.backend.elasticache.engines.memcached.MemcachedCache#stats} will return zero for all
+     * statistics. Note that recording statistics requires bookkeeping to be performed with each operation, and thus
+     * imposes a performance penalty on cache operation.
      *
      * @return this {@code Simple} instance (for chaining)
      */
@@ -83,10 +83,10 @@ final class ElastiCache {
 
     /**
      * Enables the accumulation of {@link CacheStats} during the operation of the cache. Without this
-     * {@link spring.caches.backend.elasticache.engines.memcached.MemcachedCache#stats} will return zero for all statistics. Note that recording statistics
-     * requires bookkeeping to be performed with each operation, and thus imposes a performance
-     * penalty on cache operation. Any exception thrown by the supplied {@link StatsCounter} will be
-     * suppressed and logged.
+     * {@link spring.caches.backend.elasticache.engines.memcached.MemcachedCache#stats} will return zero for all
+     * statistics. Note that recording statistics requires bookkeeping to be performed with each operation, and thus
+     * imposes a performance penalty on cache operation. Any exception thrown by the supplied {@link StatsCounter} will
+     * be suppressed and logged.
      *
      * @param statsCounterSupplier a supplier instance that returns a new {@link StatsCounter}
      * @return this {@code Simple} instance (for chaining)

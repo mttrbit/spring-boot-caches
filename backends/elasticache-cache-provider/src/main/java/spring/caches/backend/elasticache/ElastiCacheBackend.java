@@ -42,7 +42,13 @@ final class ElastiCacheBackend extends CacheBackend {
 
     @Override
     public void injectCacheMeterBinderProvider(BiConsumer<String, Object> consumer) {
-        consumer.accept(getBackendName() + "redis", (CacheMeterBinderProvider<RedisCache>) RedisCacheMetrics::new);
-        consumer.accept(getBackendName() + "memcached", (CacheMeterBinderProvider<MemcachedCache>) MemcachedCacheMetrics::new);
+        consumer.accept(
+                getBackendName() + "redis",
+                (CacheMeterBinderProvider<RedisCache>) RedisCacheMetrics::new
+        );
+        consumer.accept(
+                getBackendName() + "memcached",
+                (CacheMeterBinderProvider<MemcachedCache>) MemcachedCacheMetrics::new
+        );
     }
 }

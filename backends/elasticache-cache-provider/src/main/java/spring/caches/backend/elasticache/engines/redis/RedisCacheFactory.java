@@ -16,7 +16,6 @@
 
 package spring.caches.backend.elasticache.engines.redis;
 
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -33,51 +32,49 @@ import java.util.Map;
  */
 public class RedisCacheFactory extends AbstractCacheFactory<RedisConnectionFactory> {
 
-	private static final boolean JEDIS_AVAILABLE = ClassUtils.isPresent("redis.clients.jedis.Jedis",
-			ClassUtils.getDefaultClassLoader());
+    private static final boolean JEDIS_AVAILABLE = ClassUtils.isPresent("redis.clients.jedis.Jedis",
+            ClassUtils.getDefaultClassLoader());
 
-	private static final boolean LETTUCE_AVAILABLE = ClassUtils.isPresent("io.lettuce.core.RedisClient",
-			ClassUtils.getDefaultClassLoader());
+    private static final boolean LETTUCE_AVAILABLE = ClassUtils.isPresent("io.lettuce.core.RedisClient",
+            ClassUtils.getDefaultClassLoader());
 
-	public RedisCacheFactory() {
-	}
+    public RedisCacheFactory() {
+    }
 
-	// change to Map<String, ElastiCache> settings
-	public RedisCacheFactory(Map<String, Integer> expiryTimePerCache, int expiryTime) {
-		super(expiryTimePerCache, expiryTime);
-	}
+    // change to Map<String, ElastiCache> settings
+    public RedisCacheFactory(Map<String, Integer> expiryTimePerCache, int expiryTime) {
+        super(expiryTimePerCache, expiryTime);
+    }
 
-	@Override
-	public boolean isSupportingCacheArchitecture(String architecture) {
-		return "redis".equalsIgnoreCase(architecture);
-	}
+    @Override
+    public boolean isSupportingCacheArchitecture(String architecture) {
+        return "redis".equalsIgnoreCase(architecture);
+    }
 
-	@Override
-	public Cache createCache(String cacheName, String host, int port) throws Exception {
-		// TODO use recordStats flag to determine if builder.enableStatistics() method should be used.
-		return RedisCacheManager.builder(getConnectionFactory(host, port)).build().getCache(cacheName);
-	}
+    @Override
+    public Cache createCache(String cacheName, String host, int port) throws Exception {
+        // TODO use recordStats flag to determine if builder.enableStatistics() method should be used.
+        return RedisCacheManager.builder(getConnectionFactory(host, port)).build().getCache(cacheName);
+    }
 
-	@Override
-	protected void destroyConnectionClient(RedisConnectionFactory connectionClient) throws Exception {
+    @Override
+    protected void destroyConnectionClient(RedisConnectionFactory connectionClient) throws Exception {
 
-	}
+    }
 
-	@Override
-	protected RedisConnectionFactory createConnectionClient(String hostName, int port) {
-		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-		configuration.setHostName(hostName);
-		configuration.setPort(port);
-		if (JEDIS_AVAILABLE) {
-			return new JedisConnectionFactory(configuration);
-		}
-		else if (LETTUCE_AVAILABLE) {
-			return new LettuceConnectionFactory(configuration);
-		}
-		else {
-			throw new IllegalArgumentException("No Jedis or lettuce client on classpath. "
-					+ "Please add one of the implementation to your classpath");
-		}
-	}
+    @Override
+    protected RedisConnectionFactory createConnectionClient(String hostName, int port) {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(hostName);
+        configuration.setPort(port);
+        if (JEDIS_AVAILABLE) {
+            return new JedisConnectionFactory(configuration);
+        } else if (LETTUCE_AVAILABLE) {
+            return new LettuceConnectionFactory(configuration);
+        } else {
+            throw new IllegalArgumentException("No Jedis or lettuce client on classpath. "
+                    + "Please add one of the implementation to your classpath");
+        }
+    }
 
 }

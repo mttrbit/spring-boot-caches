@@ -11,8 +11,7 @@ import org.springframework.data.redis.cache.RedisCache;
  *
  * {@link CacheMeterBinderProvider} implementation for Redis.
  *
- * @author Stephane Nicoll
- * @since 2.4.0
+ * @deprecated delete this class once the project is updated to latest version of spring boot actuator.
  */
 @Deprecated
 public class RedisCacheMeterBinderProvider implements CacheMeterBinderProvider<RedisCache> {

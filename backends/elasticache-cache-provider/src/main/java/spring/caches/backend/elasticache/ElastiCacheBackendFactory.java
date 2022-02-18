@@ -16,6 +16,7 @@ import spring.caches.backend.properties.tree.MultiCacheProperties;
 import spring.caches.backend.properties.tree.Node;
 import spring.caches.backend.properties.tree.Tree;
 import spring.caches.backend.system.BackendFactory;
+import spring.caches.backend.system.CacheBackendInstantiationException;
 import spring.caches.backend.system.DefaultPlatform;
 
 import java.util.ArrayList;
@@ -66,6 +67,10 @@ public class ElastiCacheBackendFactory extends BackendFactory implements Applica
                 settings.put(name, builder);
             }
         });
+
+        if (settings.isEmpty()) {
+            throw new CacheBackendInstantiationException("Invalid cache backend configuration!");
+        }
 
         List<CacheFactory> cacheFactories = resolveCacheFactories(settings);
         List<Cache> caches = new ArrayList<>(settings.keySet().size());

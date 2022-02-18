@@ -21,7 +21,8 @@ import org.springframework.cache.Cache;
 
 /**
  * Accumulates statistics during the operation of a {@link Cache} for presentation by
- * {@link spring.caches.backend.elasticache.engines.memcached.MemcachedCache#stats}. This is solely intended for consumption by {@code Cache} implementors.
+ * {@link spring.caches.backend.elasticache.engines.memcached.MemcachedCache#stats}. This is solely intended for
+ * consumption by {@code Cache} implementors.
  * <p>
  * Modified for the purpose of this project.
  *

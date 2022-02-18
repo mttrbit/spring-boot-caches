@@ -11,6 +11,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
+/**
+ * tbd.
+ */
+@SuppressWarnings("MultipleStringLiterals")
 public class MemcachedCache implements Cache {
 
     private final MemcachedClientIF memcachedClientIF;
@@ -24,7 +28,12 @@ public class MemcachedCache implements Cache {
         this(memcachedClientIF, cacheName, false, StatsCounter.disabledStatsCounter());
     }
 
-    public MemcachedCache(MemcachedClientIF memcachedClientIF, String cacheName, boolean isRecordingStats, StatsCounter statsCounter) {
+    public MemcachedCache(
+            MemcachedClientIF memcachedClientIF,
+            String cacheName,
+            boolean isRecordingStats,
+            StatsCounter statsCounter
+    ) {
         Assert.notNull(memcachedClientIF, "memcachedClient is mandatory");
         Assert.notNull(cacheName, "cacheName is mandatory");
         this.memcachedClientIF = memcachedClientIF;

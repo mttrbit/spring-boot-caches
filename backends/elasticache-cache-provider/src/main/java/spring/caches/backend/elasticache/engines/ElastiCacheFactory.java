@@ -30,54 +30,58 @@ import java.util.List;
  */
 public class ElastiCacheFactory {
 
-	private final AmazonElastiCache amazonElastiCache;
+    private final AmazonElastiCache amazonElastiCache;
 
-	private final String cacheClusterId;
+    private final String cacheClusterId;
 
-	private final List<? extends CacheFactory> cacheFactories;
+    private final List<? extends CacheFactory> cacheFactories;
 
-	public ElastiCacheFactory(AmazonElastiCache amazonElastiCache, String cacheClusterId, List<? extends CacheFactory> cacheFactories) {
-		this.amazonElastiCache = amazonElastiCache;
-		this.cacheClusterId = cacheClusterId;
-		this.cacheFactories = cacheFactories;
-	}
+    public ElastiCacheFactory(
+            AmazonElastiCache amazonElastiCache,
+            String cacheClusterId,
+            List<? extends CacheFactory> cacheFactories
+    ) {
+        this.amazonElastiCache = amazonElastiCache;
+        this.cacheClusterId = cacheClusterId;
+        this.cacheFactories = cacheFactories;
+    }
 
-	private static Endpoint getEndpointForCache(CacheCluster cacheCluster) {
-		if (cacheCluster.getConfigurationEndpoint() != null) {
-			return cacheCluster.getConfigurationEndpoint();
-		}
+    private static Endpoint getEndpointForCache(CacheCluster cacheCluster) {
+        if (cacheCluster.getConfigurationEndpoint() != null) {
+            return cacheCluster.getConfigurationEndpoint();
+        }
 
-		if (!cacheCluster.getCacheNodes().isEmpty()) {
-			return cacheCluster.getCacheNodes().get(0).getEndpoint();
-		}
+        if (!cacheCluster.getCacheNodes().isEmpty()) {
+            return cacheCluster.getCacheNodes().get(0).getEndpoint();
+        }
 
-		throw new IllegalArgumentException("No Configuration Endpoint or Cache Node available to "
-				+ "receive address information for cluster:'" + cacheCluster.getCacheClusterId() + "'");
-	}
+        throw new IllegalArgumentException("No Configuration Endpoint or Cache Node available to "
+                + "receive address information for cluster:'" + cacheCluster.getCacheClusterId() + "'");
+    }
 
-	public Cache createInstance() throws Exception {
-		DescribeCacheClustersRequest describeCacheClustersRequest = new DescribeCacheClustersRequest()
-				.withCacheClusterId(getCacheClusterName());
-		describeCacheClustersRequest.setShowCacheNodeInfo(true);
+    public Cache createInstance() throws Exception {
+        DescribeCacheClustersRequest describeCacheClustersRequest = new DescribeCacheClustersRequest()
+                .withCacheClusterId(getCacheClusterName());
+        describeCacheClustersRequest.setShowCacheNodeInfo(true);
 
-		DescribeCacheClustersResult describeCacheClustersResult = this.amazonElastiCache
-				.describeCacheClusters(describeCacheClustersRequest);
+        DescribeCacheClustersResult describeCacheClustersResult = this.amazonElastiCache
+                .describeCacheClusters(describeCacheClustersRequest);
 
-		CacheCluster cacheCluster = describeCacheClustersResult.getCacheClusters().get(0);
-		Endpoint configurationEndpoint = getEndpointForCache(cacheCluster);
+        CacheCluster cacheCluster = describeCacheClustersResult.getCacheClusters().get(0);
+        Endpoint configurationEndpoint = getEndpointForCache(cacheCluster);
 
-		for (CacheFactory cacheFactory : this.cacheFactories) {
-			if (cacheFactory.isSupportingCacheArchitecture(cacheCluster.getEngine())) {
-				return cacheFactory.createCache(this.cacheClusterId, configurationEndpoint.getAddress(),
-						configurationEndpoint.getPort());
-			}
-		}
+        for (CacheFactory cacheFactory : this.cacheFactories) {
+            if (cacheFactory.isSupportingCacheArchitecture(cacheCluster.getEngine())) {
+                return cacheFactory.createCache(this.cacheClusterId, configurationEndpoint.getAddress(),
+                        configurationEndpoint.getPort());
+            }
+        }
 
-		throw new IllegalArgumentException("No CacheFactory configured for engine: " + cacheCluster.getEngine());
-	}
+        throw new IllegalArgumentException("No CacheFactory configured for engine: " + cacheCluster.getEngine());
+    }
 
-	private String getCacheClusterName() {
-		return this.cacheClusterId;
-	}
+    private String getCacheClusterName() {
+        return this.cacheClusterId;
+    }
 
 }
