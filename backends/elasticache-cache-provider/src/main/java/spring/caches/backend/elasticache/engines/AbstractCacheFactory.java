@@ -1,6 +1,7 @@
 package spring.caches.backend.elasticache.engines;
 
 import org.springframework.beans.factory.InitializingBean;
+import spring.caches.backend.elasticache.ElastiCache;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,16 +14,13 @@ public abstract class AbstractCacheFactory<T> implements CacheFactory {
 
     private final Map<String, T> nativeConnectionClients = new HashMap<>();
 
-    private final Map<String, Integer> expiryTimePerCache = new HashMap<>();
-
-    private int expiryTime;
+    private final Map<String, ElastiCache> settings = new HashMap<>();
 
     protected AbstractCacheFactory() {
     }
 
-    protected AbstractCacheFactory(Map<String, Integer> expiryTimePerCache, int expiryTime) {
-        this.setExpiryTimePerCache(expiryTimePerCache);
-        this.setExpiryTime(expiryTime);
+    protected AbstractCacheFactory(Map<String, ElastiCache> settings) {
+        this.settings.putAll(settings);
     }
 
     protected abstract void destroyConnectionClient(T connectionClient) throws Exception;
@@ -44,23 +42,11 @@ public abstract class AbstractCacheFactory<T> implements CacheFactory {
 
     @SuppressWarnings("UnusedParameters")
     protected int getExpiryTime(String cacheName) {
-        if (this.expiryTimePerCache.containsKey(cacheName) && this.expiryTimePerCache.get(cacheName) != null
-                && this.expiryTimePerCache.get(cacheName) != 0) {
-            return this.expiryTimePerCache.get(cacheName);
-        }
-        return getExpiryTime();
+        return settings.get(cacheName).expiration();
     }
 
-    protected int getExpiryTime() {
-        return this.expiryTime;
-    }
-
-    public void setExpiryTime(int expiryTime) {
-        this.expiryTime = expiryTime;
-    }
-
-    public void setExpiryTimePerCache(Map<String, Integer> expiryTimePerCache) {
-        this.expiryTimePerCache.putAll(expiryTimePerCache);
+    protected ElastiCache getSettingsPerCache(String cacheName) {
+        return settings.get(cacheName);
     }
 
 }

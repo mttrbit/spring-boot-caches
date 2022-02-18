@@ -1,6 +1,7 @@
 package spring.caches.backend.elasticache.engines.memcached;
 
 import net.spy.memcached.MemcachedClient;
+import spring.caches.backend.elasticache.ElastiCache;
 import spring.caches.backend.elasticache.engines.AbstractCacheFactory;
 
 import java.io.IOException;
@@ -16,9 +17,8 @@ public class MemcachedCacheFactory extends AbstractCacheFactory<MemcachedClient>
     public MemcachedCacheFactory() {
     }
 
-    // change to Map<String, ElastiCache> settings
-    public MemcachedCacheFactory(Map<String, Integer> expiryTimePerCache, int expiryTime) {
-        super(expiryTimePerCache, expiryTime);
+    public MemcachedCacheFactory(Map<String, ElastiCache> settings) {
+        super(settings);
     }
 
     @Override
@@ -28,9 +28,7 @@ public class MemcachedCacheFactory extends AbstractCacheFactory<MemcachedClient>
 
     @Override
     public MemcachedCache createCache(String cacheName, String host, int port) throws Exception {
-        MemcachedCache memcachedCache = new MemcachedCache(getConnectionFactory(host, port), cacheName);
-        memcachedCache.setExpiration(getExpiryTime(cacheName));
-        return memcachedCache;
+        return new MemcachedCache(getConnectionFactory(host, port), cacheName, getSettingsPerCache(cacheName));
     }
 
     @Override

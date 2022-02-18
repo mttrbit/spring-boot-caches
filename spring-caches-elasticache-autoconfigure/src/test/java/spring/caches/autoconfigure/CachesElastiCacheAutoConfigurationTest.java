@@ -34,8 +34,10 @@ class CachesElastiCacheAutoConfigurationTest {
     void cacheManager_configuredMultipleCaches_configuresCacheManager() {
         this.contextRunner
                 .withPropertyValues(
-                        "spring.caches.elasticache[0].names=sampleCacheOneLogical,sampleCacheTwoLogical",
-                        "spring.caches.elasticache[0].config.spec=recordStats,expiration=100"
+                        "spring.caches.elasticache.clusters[0].name=sampleCacheOneLogical",
+                        "spring.caches.elasticache.clusters[0].config.spec=recordStats,expiration=100",
+                        "spring.caches.elasticache.clusters[1].name=sampleCacheTwoLogical",
+                        "spring.caches.elasticache.clusters[1].config.spec=recordStats,expiration=600"
                 )
                 .withUserConfiguration(MockCacheConfiguration.class).run(context -> {
                     CacheManager cacheManager = context.getBean("elasticacheCacheManager", CacheManager.class);

@@ -15,19 +15,18 @@ import spring.caches.backend.elasticache.engines.redis.RedisCacheFactory;
 import spring.caches.backend.properties.tree.MultiCacheProperties;
 import spring.caches.backend.properties.tree.Node;
 import spring.caches.backend.properties.tree.Tree;
+import spring.caches.backend.properties.tree.TreeUtils;
 import spring.caches.backend.system.BackendFactory;
 import spring.caches.backend.system.CacheBackendInstantiationException;
 import spring.caches.backend.system.DefaultPlatform;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * BackendFactory for ElastiCache
@@ -43,28 +42,33 @@ public class ElastiCacheBackendFactory extends BackendFactory implements Applica
     private ApplicationContext applicationContext;
 
     private static ElastiCache findSpec(Tree t) {
-        return t.find(BACKEND_NAME + ".config.spec")
+        return t.find(t.getRoot().getKey() + ".config.spec")
                 .map(Node::getValue)
                 .map(String::valueOf)
                 .map(ElastiCache::from)
                 .orElse(ElastiCache.newBuilder());
     }
 
-    private static List<String> findNames(Tree t) {
-        return t.find(BACKEND_NAME + ".names")
-                .map(Node::getValue)
-                .map(String::valueOf)
-                .map(names -> Arrays.stream(names.split(",")).map(String::strip).collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+    private static String resolveName(Tree t) {
+        return t.apply(TreeUtils.valueOf(t.getRoot().getKey() + ".name"), Objects::toString);
+    }
+
+    private static List<Tree> findClusters(Tree t) {
+        return t
+                .find(BACKEND_NAME)
+                .map(n -> TreeUtils.subtrees(node -> node.getKey().startsWith("clusters")).apply(Tree.of(n)))
+                .orElseGet(Collections::emptyList);
     }
 
     @Override
     public CacheBackend create(MultiCacheProperties properties) {
         Map<String, ElastiCache> settings = new ConcurrentHashMap<>(16);
         properties.consume(t -> {
-            ElastiCache builder = findSpec(t);
-            for (String name : findNames(t)) {
-                settings.put(name, builder);
+            for (Tree cluster : findClusters(t)) {
+                String name = resolveName(cluster);
+                ElastiCache config = findSpec(cluster);
+                settings.put(name, config);
+
             }
         });
 
@@ -110,8 +114,8 @@ public class ElastiCacheBackendFactory extends BackendFactory implements Applica
     private List<CacheFactory> resolveCacheFactories(Map<String, ElastiCache> settings) {
         List<CacheFactory> cacheFactories = new LinkedList<>();
 
-        cacheFactories.add(new RedisCacheFactory(new HashMap<>(), 60));
-        cacheFactories.add(new MemcachedCacheFactory(new HashMap<>(), 60));
+        cacheFactories.add(new RedisCacheFactory(settings));
+        cacheFactories.add(new MemcachedCacheFactory(settings));
 
         return cacheFactories;
     }

@@ -2,23 +2,6 @@
 
 https://docs.localstack.cloud/aws/elasticache/
 
-To be defined.
-
-```yml
-spring:
-  caches:
-    ElastiCache:
-    - names: product-cache, user-cache # name of clusters
-      config:
-        type: cluster # values: cluster (default) | stack
-        spec: recordStats,expiration=100
-    - names: book-cache
-      config:
-        spec: recordStats,expiration=600
-```
-
-New proposal:
-
 ```yml
 spring:
   caches:
@@ -27,11 +10,10 @@ spring:
         credentials: ...
         region: ...
       clusters:
-        - names: product-cache, user-cache # name of clusters
+        - name: product-cache # name of clusters
           config:
-            type: cluster # values: cluster (default) | stack
             spec: recordStats,expiration=100
-        - names: book-cache
+        - name: user-cache
           config:
             spec: recordStats,expiration=600
 ```

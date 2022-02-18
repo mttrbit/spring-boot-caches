@@ -23,6 +23,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.util.ClassUtils;
+import spring.caches.backend.elasticache.ElastiCache;
 import spring.caches.backend.elasticache.engines.AbstractCacheFactory;
 
 import java.util.Map;
@@ -42,8 +43,8 @@ public class RedisCacheFactory extends AbstractCacheFactory<RedisConnectionFacto
     }
 
     // change to Map<String, ElastiCache> settings
-    public RedisCacheFactory(Map<String, Integer> expiryTimePerCache, int expiryTime) {
-        super(expiryTimePerCache, expiryTime);
+    public RedisCacheFactory(Map<String, ElastiCache> settings) {
+        super(settings);
     }
 
     @Override
@@ -53,8 +54,14 @@ public class RedisCacheFactory extends AbstractCacheFactory<RedisConnectionFacto
 
     @Override
     public Cache createCache(String cacheName, String host, int port) throws Exception {
-        // TODO use recordStats flag to determine if builder.enableStatistics() method should be used.
-        return RedisCacheManager.builder(getConnectionFactory(host, port)).build().getCache(cacheName);
+        RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager
+                .builder(getConnectionFactory(host, port));
+
+        if (getSettingsPerCache(cacheName).isRecordingStats()) {
+            builder.enableStatistics();
+        }
+
+        return builder.build().getCache(cacheName);
     }
 
     @Override

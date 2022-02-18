@@ -4,6 +4,7 @@ import net.spy.memcached.MemcachedClientIF;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.util.Assert;
+import spring.caches.backend.elasticache.ElastiCache;
 import spring.caches.backend.elasticache.engines.memcached.stats.CacheStats;
 import spring.caches.backend.elasticache.engines.memcached.stats.StatsCounter;
 
@@ -25,12 +26,27 @@ public class MemcachedCache implements Cache {
     private int expiration;
 
     public MemcachedCache(MemcachedClientIF memcachedClientIF, String cacheName) {
-        this(memcachedClientIF, cacheName, false, StatsCounter.disabledStatsCounter());
+        this(memcachedClientIF, cacheName, 60, false, StatsCounter.disabledStatsCounter());
     }
 
     public MemcachedCache(
             MemcachedClientIF memcachedClientIF,
             String cacheName,
+            ElastiCache setings
+    ) {
+        Assert.notNull(memcachedClientIF, "memcachedClient is mandatory");
+        Assert.notNull(cacheName, "cacheName is mandatory");
+        this.memcachedClientIF = memcachedClientIF;
+        this.cacheName = cacheName;
+        this.isRecordingStats = setings.isRecordingStats();
+        this.statsCounter = setings.statsCounter();
+        this.expiration = setings.expiration();
+    }
+
+    public MemcachedCache(
+            MemcachedClientIF memcachedClientIF,
+            String cacheName,
+            int expiration,
             boolean isRecordingStats,
             StatsCounter statsCounter
     ) {
@@ -40,6 +56,7 @@ public class MemcachedCache implements Cache {
         this.cacheName = cacheName;
         this.isRecordingStats = isRecordingStats;
         this.statsCounter = statsCounter;
+        this.expiration = expiration;
     }
 
     @Override

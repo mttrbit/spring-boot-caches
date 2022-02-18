@@ -11,7 +11,10 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class ElastiCache {
+/**
+ * tbd.
+ */
+public final class ElastiCache {
 
     public static final int UNSET_INT = -1;
     private static final Supplier<StatsCounter> ENABLED_STATS_COUNTER_SUPPLIER = ConcurrentStatsCounter::new;
@@ -59,7 +62,7 @@ final class ElastiCache {
         return (expiration != UNSET_INT);
     }
 
-    int getExpiration() {
+    public int expiration() {
         return hasExpiration() ? expiration : DEFAULT_EXPIRATION;
     }
 
@@ -97,8 +100,12 @@ final class ElastiCache {
         return this;
     }
 
-    boolean isRecordingStats() {
+    public boolean isRecordingStats() {
         return (statsCounterSupplier != null);
+    }
+
+    public StatsCounter statsCounter() {
+        return getStatsCounterSupplier().get();
     }
 
     Supplier<StatsCounter> getStatsCounterSupplier() {
