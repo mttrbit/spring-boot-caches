@@ -54,6 +54,7 @@ public class CaffeineBackendFactory extends BackendFactory {
                 settings.put(name, builder);
             }
         });
+
         return CaffeineCacheBackend.of(settings);
     }
 

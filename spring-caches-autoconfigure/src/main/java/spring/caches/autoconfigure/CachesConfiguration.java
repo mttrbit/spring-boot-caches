@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyS
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.core.env.MapPropertySource;
 import spring.caches.backend.CacheBackend;
 import spring.caches.backend.Platform;
 import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.system.BackendFactory;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,7 +47,7 @@ class CachesConfiguration {
 
         PlatformConfiguration(Environment environment, ApplicationContext applicationContext) {
             MultiCacheProperties properties = multiCacheProperties(environment);
-            List<CacheBackend> cacheBackends = loadCacheBackends(properties);
+            List<CacheBackend> cacheBackends = loadCacheBackends(properties, applicationContext);
             cacheMeterBinderProviderMap = loadBinderProviderMap(cacheBackends);
             configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
             cacheManagerMap = loadCacheManagerMap(cacheBackends);
@@ -60,14 +62,27 @@ class CachesConfiguration {
             return cacheManagerMap;
         }
 
-        final List<CacheBackend> loadCacheBackends(MultiCacheProperties properties) {
+        final List<CacheBackend> loadCacheBackends(
+                MultiCacheProperties properties,
+                ApplicationContext applicationContext
+        ) {
             List<CacheBackend> cacheBackends = new LinkedList<>();
-            Platform.getBackendFactoryNames().forEach(f -> {
-                MultiCacheProperties filtered = properties.filterByFactoryName(f);
+            Platform.getBackendFactoryNames().forEach(factoryName -> {
+                MultiCacheProperties filtered = properties.filterByFactoryName(factoryName);
                 if (filtered.isEmpty()) {
-                    LOG.warn("cache_backend=" + f + " not loaded -> configuration is missing.");
+                    LOG.warn("cache_backend=" + factoryName + " not loaded -> configuration is missing.");
                 } else {
-                    cacheBackends.add(Platform.getBackend(f).create(filtered));
+                    BackendFactory backendFactory = Platform.getBackend(factoryName);
+
+                    if (backendFactory instanceof ApplicationContextAware) {
+                        ((ApplicationContextAware) backendFactory).setApplicationContext(applicationContext);
+                    }
+
+                    try {
+                        cacheBackends.add(backendFactory.create(filtered));
+                    } catch (RuntimeException e) {
+                        LOG.warn("Could not create a cache backend for backend_factory=" + backendFactory, e);
+                    }
                 }
             });
 
