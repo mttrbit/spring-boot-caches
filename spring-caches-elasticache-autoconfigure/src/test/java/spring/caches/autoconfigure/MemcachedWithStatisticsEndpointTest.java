@@ -40,7 +40,7 @@ class MemcachedWithStatisticsEndpointTest {
         assertThat(cacheableMethod.computeInt(1)).isEqualTo(cacheableMethod.computeInt(1));
         assertThat(cacheableMethod.computeInt(4)).isNotEqualTo(cacheableMethod.computeInt(6));
 
-        var response = webTestClient.get()
+        webTestClient.get()
                 .uri("/actuator/metrics/cache.gets?tag=cache:a-cache&tag=cacheManager:elasticache&tag=name:a-cache&tag=result:miss")
                 .exchange().expectStatus().isOk().expectBody()
                 .jsonPath("name").isEqualTo("cache.gets")

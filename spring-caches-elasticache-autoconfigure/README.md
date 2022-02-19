@@ -1,1 +1,1 @@
-# Spring Caches Metrics Autoconfigure
+# Spring Caches Autoconfigure for ElastiCache
