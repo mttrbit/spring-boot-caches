@@ -109,8 +109,6 @@ public final class ElastiCache {
     }
 
     Supplier<StatsCounter> getStatsCounterSupplier() {
-        return (statsCounterSupplier == null)
-                ? StatsCounter::disabledStatsCounter
-                : statsCounterSupplier;
+        return (statsCounterSupplier == null) ? StatsCounter::disabledStatsCounter : statsCounterSupplier;
     }
 }

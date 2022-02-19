@@ -71,8 +71,8 @@ public class MemcachedCache implements Cache {
 
     protected Object lookup(Object key) {
         Assert.notNull(key, "key parameter is mandatory");
-        Assert.isAssignable(String.class, key.getClass());
-        Object value = this.memcachedClientIF.get((String) key);
+        // Assert.isAssignable(String.class, key.getClass());
+        Object value = this.memcachedClientIF.get(String.valueOf(key));
 
         if (isRecordingStats) {
             if (value != null) {
@@ -137,9 +137,9 @@ public class MemcachedCache implements Cache {
     @Override
     public void put(Object key, Object value) {
         Assert.notNull(key, "key parameter is mandatory");
-        Assert.isAssignable(String.class, key.getClass());
+        // Assert.isAssignable(String.class, key.getClass());
         try {
-            this.memcachedClientIF.set((String) key, this.expiration, value).get();
+            this.memcachedClientIF.set(String.valueOf(key), this.expiration, value).get();
             if (isRecordingStats) {
                 statsCounter.recordLoads(1);
             }

@@ -14,6 +14,7 @@ dependencies {
     testImplementation 'redis.clients:jedis:3.7.1'
 //    testImplementation 'redis.clients:jedis:4.1.1'
 
+    testImplementation project(":spring-caches-metrics-autoconfigure")
     testImplementation deps.springBootStarterTest
     testImplementation deps.springBootTest
     testImplementation deps.springBootStarterWebflux
