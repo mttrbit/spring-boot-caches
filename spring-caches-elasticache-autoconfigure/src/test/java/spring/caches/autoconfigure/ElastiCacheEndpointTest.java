@@ -26,8 +26,8 @@ import static org.mockito.Mockito.mock;
 
 @EnableAutoConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(initializers = MemcachedWithStatisticsEndpointTest.PropertiesInitializer.class)
-class MemcachedWithStatisticsEndpointTest {
+@ContextConfiguration(initializers = ElastiCacheEndpointTest.PropertiesInitializer.class)
+class ElastiCacheEndpointTest {
 
     @Autowired
     WebTestClient webTestClient;
