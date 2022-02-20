@@ -63,6 +63,6 @@ nav:
   - Cache Backends:
       - Simple: providers/simple.md
       - Caffeine: providers/caffeine.md
-      - Memcache: providers/memcache.md
+      - ElastiCache: providers/elasticache.md
   - Contributing: CONTRIBUTING.md
   - Change Log: CHANGELOG.md
