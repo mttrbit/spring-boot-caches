@@ -1,0 +1,28 @@
+apply plugin: "ru.vyarus.quality"
+
+dependencies {
+    annotationProcessor deps.autoService
+
+    compileOnly deps.jedis
+    compileOnly deps.lettuceCore
+
+    implementation project(":spring-caches-platform")
+    implementation deps.elasticacheClient
+    implementation deps.elasticacheSdk
+    implementation deps.springDataRedis
+
+    implementation deps.autoService
+    implementation deps.autoServiceAnnotations
+
+    api deps.springBootStarter
+    api deps.springBootActuator
+
+    testImplementation project(":spring-caches-autoconfigure")
+    testImplementation deps.assertjCore
+    testImplementation deps.springBootStarterTest
+    testImplementation deps.springBootTest
+}
+
+quality {
+    pmd = false
+}

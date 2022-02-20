@@ -1,0 +1,23 @@
+apply plugin: "ru.vyarus.quality"
+
+dependencies {
+    api project(":spring-caches-autoconfigure")
+    implementation deps.elasticacheSdk
+    implementation deps.cloudAwsCore
+    implementation deps.micrometerCore
+    implementation deps.springBootActuator
+    compileOnly deps.springBootActuatorAutoconfigure
+    implementation deps.springBootStarterWeb
+
+    testImplementation deps.servletApi
+    testImplementation deps.jmemcachedCore
+    testImplementation deps.jedis
+
+    testImplementation project(":spring-caches-metrics-autoconfigure")
+    testImplementation deps.springBootStarterTest
+    testImplementation deps.springBootTest
+    testImplementation deps.springBootStarterWebflux
+
+    testImplementation(project(":backends:elasticache-cache-provider"))
+    testImplementation deps.springBootActuatorAutoconfigure
+}

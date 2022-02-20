@@ -15,7 +15,7 @@ rm -rf site
 mkdir -p docs/providers
 cp -f backends/caffeine-cache-provider/README.md docs/providers/caffeine.md
 cp -f backends/simple-cache-provider/README.md docs/providers/simple.md
-cp -f backends/memcache-cache-provider/README.md docs/providers/memcache.md
+cp -f backends/elasticache-cache-provider/README.md docs/providers/elasticache.md
 cp -f README.md docs/index.md
 
 # Ensure MkDocs & used theme are installed

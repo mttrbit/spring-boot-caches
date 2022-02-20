@@ -34,6 +34,15 @@ ext {
             'micrometer'         : '1.5.7',
             'assertj'            : '3.21.0',
             'caffeine'           : '3.0.4',
+
+            'jedis'              : '3.7.1',
+            'lettuceCore'        : '6.1.6.RELEASE',
+            'elasticacheClient'  : '1.1.2',
+            'elasticacheSdk'     : '1.12.159',
+            'cloudAwsCore'       : '2.4.1-SNAPSHOT',
+            'springDataRedis'    : '2.6.1',
+            'jmemcachedCore'     : '1.0.0',
+            'servletApi'         : '4.0.1'
     ]
 
     deps = [
@@ -66,7 +75,18 @@ ext {
             'autoServiceAnnotations'         : "com.google.auto.service:auto-service-annotations:${versions.auto}",
             'micrometerCore'                 : "io.micrometer:micrometer-core:${versions.micrometer}",
             'assertjCore'                    : "org.assertj:assertj-core:${versions.assertj}",
-            'caffeine'                       : "com.github.ben-manes.caffeine:caffeine:${versions.caffeine}"
+            'caffeine'                       : "com.github.ben-manes.caffeine:caffeine:${versions.caffeine}",
+            // do not upgrade yet, as there incompatibilities
+            'jedis'                          : "redis.clients:jedis:${versions.jedis}",
+            'lettuceCore'                    : "io.lettuce:lettuce-core:${versions.lettuceCore}",
+            // https://mvnrepository.com/artifact/com.amazonaws/elasticache-java-cluster-client/1.1.2
+            // provide your own implementation if you want to get rid off the CVEs
+            'elasticacheClient'              : "com.amazonaws:elasticache-java-cluster-client:${versions.elasticacheClient}",
+            'elasticacheSdk'                 : "com.amazonaws:aws-java-sdk-elasticache:${versions.elasticacheSdk}",
+            'springDataRedis'                : "org.springframework.data:spring-data-redis:${versions.springDataRedis}",
+            'cloudAwsCore'                   : "io.awspring.cloud:spring-cloud-aws-core:${versions.cloudAwsCore}",
+            'servletApi'                     : "javax.servlet:javax.servlet-api:${versions.servletApi}",
+            'jmemcachedCore'                 : "com.thimbleware.jmemcached:jmemcached-core:${versions.jmemcachedCore}"
     ]
 
     getArtifactId = { project ->

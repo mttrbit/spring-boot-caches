@@ -74,7 +74,10 @@ class UnboundedSimpleCache extends ConcurrentHashMap<Object, Object> implements 
 
     @Override
     public Object put(Object key, Object value) {
-        statsCounter.recordLoads(1);
+        if (isRecordingStats) {
+            statsCounter.recordLoads(1);
+        }
+
         return super.put(key, value);
     }
 
