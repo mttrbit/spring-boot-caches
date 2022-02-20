@@ -1,5 +1,4 @@
 .gradle
-/build/
 !gradle/wrapper/gradle-wrapper.jar
 /site/
 /examples/
@@ -29,3 +28,8 @@
 /.nb-gradle/
 
 .DS_Store
+
+/docs/CHANGELOG.md
+/docs/CONTRIBUTING.md
+/docs/providers/
+/docs/index.md
