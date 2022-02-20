@@ -30,7 +30,7 @@ public class Tree {
 
     // key is always a path such as spring.caches.redis.type
     // value is the associated value
-    public Node insert(String key, Object value) {
+    Node insert(String key, Object value) {
         if (key == null) {
             throw new NullPointerException("key must not be null");
         }
@@ -123,6 +123,10 @@ public class Tree {
         if (root instanceof InnerNode) {
             ((InnerNode) root).consume(n -> traverse(n, visitor));
         }
+    }
+
+    public <T> Optional<T> getValue(String chainedKey, Class<T> clazz) {
+        return find(chainedKey).map(Node::getValue).map(clazz::cast);
     }
 
     public boolean isEmpty() {

@@ -3,7 +3,6 @@ package spring.caches.backend.simple;
 import com.google.auto.service.AutoService;
 import spring.caches.backend.CacheBackend;
 import spring.caches.backend.properties.tree.CachesProperties;
-import spring.caches.backend.properties.tree.Node;
 import spring.caches.backend.properties.tree.Tree;
 import spring.caches.backend.system.BackendFactory;
 import spring.caches.backend.system.DefaultPlatform;
@@ -30,19 +29,19 @@ public class SimpleBackendFactory extends BackendFactory {
     // provided, the default values as defined by simple will be used.
     // TODO do not return Simple, return SimpleConfig
     private static Simple findSpec(Tree t) {
-        return t.find(BACKEND_NAME + ".config.spec")
-                .map(Node::getValue)
-                .map(String::valueOf)
+        return t.getValue(BACKEND_NAME + ".config.spec", String.class)
                 .map(Simple::from)
                 .orElse(Simple.newBuilder());
     }
 
     private static List<String> findNames(Tree t) {
-        return t.find(BACKEND_NAME + ".names")
-                .map(Node::getValue)
-                .map(String::valueOf)
-                .map(names -> Arrays.stream(names.split(",")).map(String::strip).collect(Collectors.toList()))
+        return t.getValue(BACKEND_NAME + ".names", String.class)
+                .map(SimpleBackendFactory::split)
                 .orElse(Collections.emptyList());
+    }
+
+    private static List<String> split(String names) {
+        return Arrays.stream(names.split(",")).map(String::strip).collect(Collectors.toList());
     }
 
     @Override

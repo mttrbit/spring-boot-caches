@@ -13,7 +13,6 @@ import spring.caches.backend.elasticache.engines.ElastiCacheFactory;
 import spring.caches.backend.elasticache.engines.memcached.MemcachedCacheFactory;
 import spring.caches.backend.elasticache.engines.redis.RedisCacheFactory;
 import spring.caches.backend.properties.tree.CachesProperties;
-import spring.caches.backend.properties.tree.Node;
 import spring.caches.backend.properties.tree.Tree;
 import spring.caches.backend.properties.tree.TreeUtils;
 import spring.caches.backend.system.BackendFactory;
@@ -42,9 +41,7 @@ public class ElastiCacheBackendFactory extends BackendFactory implements Applica
     private ApplicationContext applicationContext;
 
     private static ElastiCache findSpec(Tree t) {
-        return t.find(t.getRoot().getKey() + ".config.spec")
-                .map(Node::getValue)
-                .map(String::valueOf)
+        return t.getValue(t.getRoot().getKey() + ".config.spec", String.class)
                 .map(ElastiCache::from)
                 .orElse(ElastiCache.newBuilder());
     }
