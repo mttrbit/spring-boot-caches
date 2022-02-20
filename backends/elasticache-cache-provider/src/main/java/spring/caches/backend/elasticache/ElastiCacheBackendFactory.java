@@ -12,7 +12,7 @@ import spring.caches.backend.elasticache.engines.CacheFactory;
 import spring.caches.backend.elasticache.engines.ElastiCacheFactory;
 import spring.caches.backend.elasticache.engines.memcached.MemcachedCacheFactory;
 import spring.caches.backend.elasticache.engines.redis.RedisCacheFactory;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.properties.tree.CachesProperties;
 import spring.caches.backend.properties.tree.Node;
 import spring.caches.backend.properties.tree.Tree;
 import spring.caches.backend.properties.tree.TreeUtils;
@@ -61,7 +61,7 @@ public class ElastiCacheBackendFactory extends BackendFactory implements Applica
     }
 
     @Override
-    public CacheBackend create(MultiCacheProperties properties) {
+    public CacheBackend create(CachesProperties properties) {
         Map<String, ElastiCache> settings = new ConcurrentHashMap<>(16);
         properties.consume(t -> {
             for (Tree cluster : findClusters(t)) {

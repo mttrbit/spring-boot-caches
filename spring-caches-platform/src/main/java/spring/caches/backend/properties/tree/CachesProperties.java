@@ -2,21 +2,20 @@ package spring.caches.backend.properties.tree;
 
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * tbd.
  */
-public final class MultiCacheProperties {
+public final class CachesProperties {
 
     private final Tree properties;
 
-    private MultiCacheProperties(Tree properties) {
+    private CachesProperties(Tree properties) {
         this.properties = properties;
     }
 
     // For testing purposes only
-    public MultiCacheProperties() {
+    public CachesProperties() {
         this(Tree.empty());
     }
 
@@ -25,24 +24,18 @@ public final class MultiCacheProperties {
         return key.substring(0, index == -1 ? key.length() : index);
     }
 
-    public static MultiCacheProperties load(
-            Map<String, Object> data,
-            Predicate<? super Map.Entry<String, Object>> filter,
-            int offset
-    ) {
+    public static CachesProperties resolve(Resolvable resolvable) {
+        Map<String, Object> data = resolvable.resolve();
         Tree properties = Tree.empty();
-        data.entrySet().stream()
-                .filter(filter)
-                .forEach(e -> properties.insert(e.getKey().substring(offset), e.getValue()));
-
-        return new MultiCacheProperties(properties);
+        data.forEach(properties::insert);
+        return new CachesProperties(properties);
     }
 
     public boolean isEmpty() {
         return properties.isEmpty();
     }
 
-    public MultiCacheProperties filterByFactoryName(String factoryName) {
+    public CachesProperties filterByFactoryName(String factoryName) {
         InnerNode root = new InnerNode(4);
         root.setKey("caches");
         properties.apply((node, inner) -> {
@@ -50,7 +43,7 @@ public final class MultiCacheProperties {
                 inner.addChild(node);
             }
         }, root);
-        return new MultiCacheProperties(new Tree(root));
+        return new CachesProperties(new Tree(root));
     }
 
     public void consume(Consumer<? super Tree> consumer) {
@@ -65,5 +58,12 @@ public final class MultiCacheProperties {
                 consumer.accept(new Tree(child));
             }
         }
+    }
+
+    /**
+     * tbd.
+     */
+    public interface Resolvable {
+        Map<String, Object> resolve();
     }
 }

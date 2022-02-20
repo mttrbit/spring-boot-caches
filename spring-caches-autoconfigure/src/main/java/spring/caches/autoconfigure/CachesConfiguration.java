@@ -16,7 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import spring.caches.backend.CacheBackend;
 import spring.caches.backend.Platform;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.properties.tree.CachesProperties;
 import spring.caches.backend.system.BackendFactory;
 
 import java.util.HashMap;
@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Configuration(proxyBeanMethods = false)
@@ -46,7 +47,7 @@ class CachesConfiguration {
         private final Map<String, Object> cacheMeterBinderProviderMap;
 
         PlatformConfiguration(Environment environment, ApplicationContext applicationContext) {
-            MultiCacheProperties properties = multiCacheProperties(environment);
+            CachesProperties properties = CachesProperties.resolve(new ConfigurationResolver(environment));
             List<CacheBackend> cacheBackends = loadCacheBackends(properties, applicationContext);
             cacheMeterBinderProviderMap = loadBinderProviderMap(cacheBackends);
             configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
@@ -63,12 +64,12 @@ class CachesConfiguration {
         }
 
         final List<CacheBackend> loadCacheBackends(
-                MultiCacheProperties properties,
+                CachesProperties properties,
                 ApplicationContext applicationContext
         ) {
             List<CacheBackend> cacheBackends = new LinkedList<>();
             Platform.getBackendFactoryNames().forEach(factoryName -> {
-                MultiCacheProperties filtered = properties.filterByFactoryName(factoryName);
+                CachesProperties filtered = properties.filterByFactoryName(factoryName);
                 if (filtered.isEmpty()) {
                     LOG.warn("cache_backend=" + factoryName + " not loaded -> configuration is missing.");
                 } else {
@@ -101,14 +102,6 @@ class CachesConfiguration {
             return cacheManagerMap;
         }
 
-        final MultiCacheProperties multiCacheProperties(Environment environment) {
-            return MultiCacheProperties.load(
-                    resolveProperties(ConfigurationPropertySources.get(environment)),
-                    e -> e.getKey().startsWith(PREFIX_KEY),
-                    OFFSET
-            );
-        }
-
         final void registerCacheMeterBinderProviders() {
             cacheMeterBinderProviderMap.forEach(this::registerSingleton);
         }
@@ -131,23 +124,42 @@ class CachesConfiguration {
             }
         }
 
-        private Map<String, Object> resolveProperties(Iterable<ConfigurationPropertySource> sources) {
-            return StreamSupport.stream(sources.spliterator(), false)
-                    .map(ConfigurationPropertySource::getUnderlyingSource)
-                    .filter(source -> source instanceof MapPropertySource)
-                    .map(source -> (MapPropertySource) source)
-                    .filter(source -> filterSourcesByName(source, SOURCES))
-                    .collect(HashMap::new, (m, n) -> m.putAll(n.getSource()), Map::putAll);
-        }
+        private static class ConfigurationResolver implements CachesProperties.Resolvable {
+            private final Environment environment;
 
-        private boolean filterSourcesByName(MapPropertySource source, String... names) {
-            for (String name : names) {
-                if (source.getName().startsWith(name)) {
-                    return true;
-                }
+            ConfigurationResolver(Environment environment) {
+                this.environment = environment;
             }
 
-            return false;
+
+            @Override
+            public Map<String, Object> resolve() {
+                Map<String, Object> data = resolveProperties(ConfigurationPropertySources.get(environment));
+                return data.entrySet().stream()
+                        .filter(e -> e.getKey().startsWith(PREFIX_KEY))
+                        .collect(Collectors.toMap(
+                                k -> k.getKey().substring(OFFSET),
+                                Map.Entry::getValue));
+            }
+
+            private Map<String, Object> resolveProperties(Iterable<ConfigurationPropertySource> sources) {
+                return StreamSupport.stream(sources.spliterator(), false)
+                        .map(ConfigurationPropertySource::getUnderlyingSource)
+                        .filter(source -> source instanceof MapPropertySource)
+                        .map(source -> (MapPropertySource) source)
+                        .filter(source -> filterSourcesByName(source, SOURCES))
+                        .collect(HashMap::new, (m, n) -> m.putAll(n.getSource()), Map::putAll);
+            }
+
+            private boolean filterSourcesByName(MapPropertySource source, String... names) {
+                for (String name : names) {
+                    if (source.getName().startsWith(name)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
     }
 

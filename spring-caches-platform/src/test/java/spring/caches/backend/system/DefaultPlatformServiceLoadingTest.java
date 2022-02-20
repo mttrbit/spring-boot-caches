@@ -3,7 +3,7 @@ package spring.caches.backend.system;
 import com.google.auto.service.AutoService;
 import org.junit.jupiter.api.Test;
 import spring.caches.backend.CacheBackend;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.properties.tree.CachesProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +21,7 @@ public class DefaultPlatformServiceLoadingTest {
     @AutoService(BackendFactory.class)
     public static final class TestBackendFactoryService extends BackendFactory {
         @Override
-        public CacheBackend create(MultiCacheProperties multiCacheProperties) {
+        public CacheBackend create(CachesProperties multiCacheProperties) {
             throw new UnsupportedOperationException();
         }
 

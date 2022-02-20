@@ -2,7 +2,7 @@ package spring.caches.backend.simple;
 
 import com.google.auto.service.AutoService;
 import spring.caches.backend.CacheBackend;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.properties.tree.CachesProperties;
 import spring.caches.backend.properties.tree.Node;
 import spring.caches.backend.properties.tree.Tree;
 import spring.caches.backend.system.BackendFactory;
@@ -46,7 +46,7 @@ public class SimpleBackendFactory extends BackendFactory {
     }
 
     @Override
-    public CacheBackend create(MultiCacheProperties properties) {
+    public CacheBackend create(CachesProperties properties) {
         Map<String, Simple> settings = new ConcurrentHashMap<>(16);
         properties.consume(t -> {
             Simple builder = findSpec(t).recordStats();

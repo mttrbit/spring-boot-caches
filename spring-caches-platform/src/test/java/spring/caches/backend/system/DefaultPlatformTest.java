@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import spring.caches.backend.CacheBackend;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.properties.tree.CachesProperties;
 
 import java.util.Collections;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class DefaultPlatformTest {
     public void testBackendFactory() {
         CacheBackend mockBackend = Mockito.mock(CacheBackend.class);
         Mockito.when(mockBackendFactory.create(any())).thenReturn(mockBackend);
-        Assertions.assertThat(platform.getBackendFactory("mock").create(new MultiCacheProperties())).isEqualTo(mockBackend);
+        Assertions.assertThat(platform.getBackendFactory("mock").create(new CachesProperties())).isEqualTo(mockBackend);
     }
 
     @Test
