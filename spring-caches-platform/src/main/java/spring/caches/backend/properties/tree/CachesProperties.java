@@ -1,7 +1,6 @@
 package spring.caches.backend.properties.tree;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
