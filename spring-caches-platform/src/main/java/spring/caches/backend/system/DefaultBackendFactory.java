@@ -3,9 +3,8 @@ package spring.caches.backend.system;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import spring.caches.backend.CacheBackend;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.properties.tree.CachesProperties;
 import spring.caches.backend.properties.tree.Node;
-import spring.caches.backend.properties.tree.Tree;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +45,7 @@ final class DefaultBackendFactory extends BackendFactory {
         return INSTANCE;
     }
 
-    private static List<String> findNames(Tree t) {
+    private static List<String> findNames(CachesProperties.Data t) {
         return t.find(BACKEND_NAME + ".names")
                 .map(Node::getValue)
                 .map(String::valueOf)
@@ -55,7 +54,7 @@ final class DefaultBackendFactory extends BackendFactory {
     }
 
     @Override
-    public CacheBackend create(MultiCacheProperties properties) {
+    public CacheBackend create(CachesProperties properties) {
         List<String> names = new LinkedList<>();
         properties.consume(t -> names.addAll(findNames(t)));
         return new CacheBackend() {

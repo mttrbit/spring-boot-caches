@@ -2,6 +2,7 @@ package spring.caches.backend.properties.tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -10,24 +11,26 @@ import java.util.stream.Collectors;
  * properties.
  */
 @SuppressWarnings({"PMD.LinguisticNaming", "PMD.SuspiciousEqualsMethodName"})
-public final class TreeUtils {
+public final class CachePropertiesUtils {
 
-    private TreeUtils() {
+    private CachePropertiesUtils() {
     }
 
-    public static Function<Tree, Tree> subtree(Function<Node, Boolean> condition) {
-        return tree ->
-                tree.apply(collectIf(condition), new ArrayList<>()).stream()
-                        .map(Tree::of)
-                        .findFirst()
-                        .orElse(Tree.empty());
+    public static Optional<CachesProperties.Data> findBy(
+            CachesProperties.Data data,
+            Function<Node, Boolean> condition
+    ) {
+        return data.apply(collectIf(condition), new ArrayList<>()).stream().findFirst().map(CachesProperties.Data::of);
     }
 
-    public static Function<Tree, List<Tree>> subtrees(Function<Node, Boolean> condition) {
-        return tree ->
-                tree.apply(collectIf(condition), new ArrayList<>()).stream()
-                        .map(Tree::of)
-                        .collect(Collectors.toList());
+    /**
+     * Divides the properties into n parts ( n >= 0 ) based on the given condition.
+     */
+    public static List<CachesProperties.Data> split(CachesProperties.Data data, Function<Node, Boolean> condition) {
+        return data.apply(collectIf(condition), new ArrayList<>())
+                .stream()
+                .map(CachesProperties.Data::of)
+                .collect(Collectors.toList());
     }
 
     public static Function<Node, Boolean> hasKey(String key) {
@@ -66,14 +69,18 @@ public final class TreeUtils {
         };
     }
 
+    public static Function<Node, List<CachesProperties.Data>> toList(String key) {
+        return n -> split(CachesProperties.Data.of(n), node -> node.getKey().startsWith(key));
+    }
+
     public static NodeHandler<List<Node>> collect() {
         return (node, context) -> context.add(node);
     }
 
-    public static Function<Tree, Object> valueOf(String path) {
+    public static Function<CachesProperties.Data, Object> valueOf(String path) {
         return tree -> tree.find(path)
                 .filter(n -> n instanceof LeafNode)
-                .map(n -> ((LeafNode) n).getValue())
+                .map(Node::getValue)
                 .orElse(null);
     }
 

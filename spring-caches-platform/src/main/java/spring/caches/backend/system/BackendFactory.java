@@ -1,7 +1,7 @@
 package spring.caches.backend.system;
 
 import spring.caches.backend.CacheBackend;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
+import spring.caches.backend.properties.tree.CachesProperties;
 
 /**
  * An API to create caching backends for a given set of properties. This is implemented as an abstract class
@@ -31,5 +31,5 @@ public abstract class BackendFactory {
      * Sometimes a cache backend cannot be created due to missing or invalid configuration data or due to other
      * reasons. In those situations it is expected that this method throws a {@code RuntimeException}.
      */
-    public abstract CacheBackend create(MultiCacheProperties properties);
+    public abstract CacheBackend create(CachesProperties properties);
 }

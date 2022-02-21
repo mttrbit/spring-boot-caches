@@ -3,9 +3,7 @@ package spring.caches.backend.caffeine;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.auto.service.AutoService;
 import spring.caches.backend.CacheBackend;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
-import spring.caches.backend.properties.tree.Node;
-import spring.caches.backend.properties.tree.Tree;
+import spring.caches.backend.properties.tree.CachesProperties;
 import spring.caches.backend.system.BackendFactory;
 import spring.caches.backend.system.DefaultPlatform;
 
@@ -29,28 +27,31 @@ public class CaffeineBackendFactory extends BackendFactory {
 
     // Constructs a new caffeine cache instance. If there is no cache configuration
     // provided, the default values as defined by caffeine will be used.
-    private static Caffeine<Object, Object> findSpec(Tree t) {
-        return t.find(BACKEND_NAME + ".config.spec")
-                .map(Node::getValue)
-                .map(String::valueOf)
+    private static Caffeine<Object, Object> findSpec(CachesProperties.Data data) {
+        return data
+                .getValue(".config.spec", String.class)
                 .map(Caffeine::from)
                 .orElse(Caffeine.newBuilder());
     }
 
-    private static List<String> findNames(Tree t) {
-        return t.find(BACKEND_NAME + ".names")
-                .map(Node::getValue)
-                .map(String::valueOf)
-                .map(names -> Arrays.stream(names.split(",")).map(String::strip).collect(Collectors.toList()))
+
+    private static List<String> findNames(CachesProperties.Data data) {
+        return data
+                .getValue(".names", String.class)
+                .map(CaffeineBackendFactory::split)
                 .orElse(Collections.emptyList());
     }
 
+    private static List<String> split(String names) {
+        return Arrays.stream(names.split(",")).map(String::strip).collect(Collectors.toList());
+    }
+
     @Override
-    public CacheBackend create(MultiCacheProperties properties) {
+    public CacheBackend create(CachesProperties properties) {
         Map<String, Caffeine<Object, Object>> settings = new ConcurrentHashMap<>(16);
-        properties.consume(t -> {
-            Caffeine<Object, Object> builder = findSpec(t);
-            for (String name : findNames(t)) {
+        properties.consume(data -> {
+            Caffeine<Object, Object> builder = findSpec(data);
+            for (String name : findNames(data)) {
                 settings.put(name, builder);
             }
         });

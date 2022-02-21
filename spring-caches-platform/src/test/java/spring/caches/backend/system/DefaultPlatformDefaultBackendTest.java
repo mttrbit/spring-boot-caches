@@ -3,11 +3,8 @@ package spring.caches.backend.system;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import spring.caches.backend.CacheBackend;
-import spring.caches.backend.properties.tree.MultiCacheProperties;
-import spring.caches.backend.properties.tree.Tree;
+import spring.caches.backend.properties.tree.CachesProperties;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,7 +23,7 @@ public class DefaultPlatformDefaultBackendTest {
 
     @Test
     public void testBackendFactory() {
-        Assertions.assertThat(platform.getBackendFactory("default").create(new MultiCacheProperties())).isInstanceOf(CacheBackend.class);
+        Assertions.assertThat(platform.getBackendFactory("default").create(new CachesProperties())).isInstanceOf(CacheBackend.class);
     }
 
     @Test

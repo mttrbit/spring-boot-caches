@@ -25,8 +25,8 @@ public class SpringCacheManagerIntegrationTest {
                         "spring.caches.caffeine[1].config.spec=maximumSize=50,expireAfterAccess=10s"
                 )
                 .withBean("cacheableMethod", CacheableMethod.class)
-                .run(context -> assertThat(context).hasBean("caffeineCacheManager"))
                 .run(context -> {
+                    assertThat(context).hasBean("caffeineCacheManager");
                     CaffeineCacheManager cacheManager = context.getBean("caffeineCacheManager", CaffeineCacheManager.class);
                     assertThat(cacheManager.getCache("cache1")).isNotNull();
                     assertThat(cacheManager.getCache("cache2")).isNotNull();
