@@ -27,16 +27,16 @@ public class CaffeineBackendFactory extends BackendFactory {
 
     // Constructs a new caffeine cache instance. If there is no cache configuration
     // provided, the default values as defined by caffeine will be used.
-    private static Caffeine<Object, Object> findSpec(CachesProperties.Data t) {
-        return t
+    private static Caffeine<Object, Object> findSpec(CachesProperties.Data data) {
+        return data
                 .getValue(".config.spec", String.class)
                 .map(Caffeine::from)
                 .orElse(Caffeine.newBuilder());
     }
 
 
-    private static List<String> findNames(CachesProperties.Data t) {
-        return t
+    private static List<String> findNames(CachesProperties.Data data) {
+        return data
                 .getValue(".names", String.class)
                 .map(CaffeineBackendFactory::split)
                 .orElse(Collections.emptyList());

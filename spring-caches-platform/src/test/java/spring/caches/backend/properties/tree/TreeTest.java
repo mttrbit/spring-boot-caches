@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ class TreeTest {
         data.insert("a.b.c", "1");
         data.insert("a.b.d", "2");
         data.insert("a.b.a", "3");
-        Assertions.assertThat(data.apply(CachePropertiesUtils.collectIf(CachePropertiesUtils.isLeaf()), new ArrayList<>()).size()).isEqualTo(3);
+        Assertions.assertThat(split(data, isLeaf()).size()).isEqualTo(3);
     }
 
     @Test
@@ -56,7 +55,7 @@ class TreeTest {
         data.insert("a.b[0].b", "2");
         data.insert("a.b[1].a", "3");
         data.insert("a.b[1].b", "4");
-        List<Node> nodes = data.apply(CachePropertiesUtils.collectIf(CachePropertiesUtils.isArrayNode()), new ArrayList<>());
+        List<CachesProperties.Data> nodes = split(data, isArrayNode());
         assertThat(nodes.size()).isEqualTo(2);
         assertThat(nodes.toString()).isEqualTo("[(b[0],[(a=1), (b=2)]), (b[1],[(a=3), (b=4)])]");
     }
@@ -106,23 +105,15 @@ class TreeTest {
     }
 
     @Test
-    public void findNode2() {
-        data.insert("a.b.c", "1");
-        data.insert("a.b.g.d", "2");
-        data.insert("a.e.d", "3");
-        Assertions.assertThat(data.apply(slice(hasChild(new LeafNode("c", "1"))), valueOf("b.g.d"))).isEqualTo("2");
-    }
-
-    @Test
     public void findNode3() {
         data.insert("a.b.c", "1");
         data.insert("a.b.g.d", "2");
         data.insert("a.e.d", "3");
-        Optional<CachesProperties.Data> maybeData = findBy(data, hasChild(new LeafNode("c", "1")));
-        assertThat(maybeData.isPresent()).isTrue();
-        Optional<Node> maybeData2 = maybeData.get().find("b.g.d");
-        assertThat(maybeData2.isPresent()).isTrue();
-        Assertions.assertThat(maybeData2.get().getValue()).isEqualTo("2");
+        Assertions
+                .assertThat(findBy(data, hasChild(new LeafNode("c", "1")))
+                        .flatMap(n -> n.find("b.g.d"))
+                        .map(Node::getValue))
+                .isEqualTo(Optional.of("2"));
     }
 
     @Test
@@ -131,7 +122,7 @@ class TreeTest {
         data.insert("a.b.d", "2");
         data.insert("a.e.d", "3");
         data.insert("a.f.c", "1");
-        Assertions.assertThat(data.apply(CachePropertiesUtils.collectIf(CachePropertiesUtils.hasChild(new LeafNode("c", "1"))), new ArrayList<>()).size()).isEqualTo(2);
+        Assertions.assertThat(split(data, hasChild(new LeafNode("c", "1"))).size()).isEqualTo(2);
     }
 
     @Test
@@ -140,7 +131,7 @@ class TreeTest {
         data.insert("a.b.t", "2");
         data.insert("a.c.t", "3");
         Map<String, String> caches = new HashMap<>();
-        data.apply(split(CachePropertiesUtils.hasChild("t"))).forEach(t -> t.apply((n, c) -> {
+        split(data, hasChild("t")).forEach(t -> t.apply((n, c) -> {
             if (n.isLeaf()) {
                 String key = n.getParent().getKey();
                 String cache = String.valueOf(n.getValue());

@@ -16,26 +16,16 @@ public final class CachePropertiesUtils {
     private CachePropertiesUtils() {
     }
 
-    public static Function<CachesProperties.Data, CachesProperties.Data> slice(Function<Node, Boolean> condition) {
-        return tree -> {
-            List<CachesProperties.Data> data = split(tree, condition);
-            return data.isEmpty() ? CachesProperties.Data.empty() : data.get(0);
-        };
+    public static Optional<CachesProperties.Data> findBy(
+            CachesProperties.Data data,
+            Function<Node, Boolean> condition
+    ) {
+        return data.apply(collectIf(condition), new ArrayList<>()).stream().findFirst().map(CachesProperties.Data::of);
     }
 
     /**
      * Divides the properties into n parts ( n >= 0 ) based on the given condition.
      */
-    public static Function<CachesProperties.Data, List<CachesProperties.Data>> split(
-            Function<Node, Boolean> condition
-    ) {
-        return tree -> split(tree, condition);
-    }
-
-    public static Optional<CachesProperties.Data> findBy(CachesProperties.Data data, Function<Node, Boolean> condition) {
-        return data.apply(collectIf(condition), new ArrayList<>()).stream().findFirst().map(CachesProperties.Data::of);
-    }
-
     public static List<CachesProperties.Data> split(CachesProperties.Data data, Function<Node, Boolean> condition) {
         return data.apply(collectIf(condition), new ArrayList<>())
                 .stream()
@@ -80,9 +70,7 @@ public final class CachePropertiesUtils {
     }
 
     public static Function<Node, List<CachesProperties.Data>> toList(String key) {
-        return n -> CachePropertiesUtils
-                .split(node -> node.getKey().startsWith(key))
-                .apply(CachesProperties.Data.of(n));
+        return n -> split(CachesProperties.Data.of(n), node -> node.getKey().startsWith(key));
     }
 
     public static NodeHandler<List<Node>> collect() {

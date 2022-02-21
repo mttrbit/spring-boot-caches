@@ -38,14 +38,14 @@ public class ElastiCacheBackendFactory extends BackendFactory implements Applica
 
     private ApplicationContext applicationContext;
 
-    private static ElastiCache findSpec(CachesProperties.Data t) {
-        return t.getValue(".config.spec", String.class)
+    private static ElastiCache findSpec(CachesProperties.Data data) {
+        return data.getValue(".config.spec", String.class)
                 .map(ElastiCache::from)
                 .orElse(ElastiCache.newBuilder());
     }
 
-    private static String resolveName(CachesProperties.Data t) {
-        return t.getValue(".name", String.class)
+    private static String resolveName(CachesProperties.Data data) {
+        return data.getValue(".name", String.class)
                 .orElseThrow(() -> new RuntimeException("No cache name specified in backend=" + BACKEND_NAME));
     }
 
