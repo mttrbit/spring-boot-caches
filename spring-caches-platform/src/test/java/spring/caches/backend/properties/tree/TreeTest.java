@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static spring.caches.backend.properties.tree.CachePropertiesUtils.*;
 
 class TreeTest {
 
@@ -49,7 +51,7 @@ class TreeTest {
     }
 
     @Test
-    public void handlingNodesWIthIndeces() {
+    public void handlingNodesWithIndeces() {
         data.insert("a.b[0].a", "1");
         data.insert("a.b[0].b", "2");
         data.insert("a.b[1].a", "3");
@@ -80,9 +82,10 @@ class TreeTest {
         data.insert("a.b.c", "1");
         data.insert("a.b.d", "2");
         data.insert("a.e.d", "3");
-        CachesProperties.Data subTree = data.apply(CachePropertiesUtils.subtree(CachePropertiesUtils.hasKey("d")));
-        assertThat(subTree.find("d").isPresent()).isTrue();
-        assertThat(subTree.find("d").get().toString()).isEqualTo("(d=2)");
+        Optional<CachesProperties.Data> slice = findBy(data, hasKey("d"));
+        assertThat(slice.isPresent()).isTrue();
+        assertThat(slice.get().find("d").isPresent()).isTrue();
+        assertThat(slice.get().find("d").get().toString()).isEqualTo("(d=2)");
     }
 
     @Test
@@ -90,7 +93,7 @@ class TreeTest {
         data.insert("a.b.c", "1");
         data.insert("a.b.d", "2");
         data.insert("a.e.d", "3");
-        List<CachesProperties.Data> trees = data.apply(CachePropertiesUtils.subtrees(CachePropertiesUtils.hasKey("d")));
+        List<CachesProperties.Data> trees = split(data, hasKey("d"));
         assertThat(trees.size()).isEqualTo(2);
         assertThat(trees.get(0).toString()).isEqualTo("(d=2)");
         assertThat(trees.get(1).toString()).isEqualTo("(d=3)");
@@ -107,7 +110,19 @@ class TreeTest {
         data.insert("a.b.c", "1");
         data.insert("a.b.g.d", "2");
         data.insert("a.e.d", "3");
-        Assertions.assertThat(data.apply(CachePropertiesUtils.subtree(CachePropertiesUtils.hasChild(new LeafNode("c", "1"))), CachePropertiesUtils.valueOf("b.g.d"))).isEqualTo("2");
+        Assertions.assertThat(data.apply(slice(hasChild(new LeafNode("c", "1"))), valueOf("b.g.d"))).isEqualTo("2");
+    }
+
+    @Test
+    public void findNode3() {
+        data.insert("a.b.c", "1");
+        data.insert("a.b.g.d", "2");
+        data.insert("a.e.d", "3");
+        Optional<CachesProperties.Data> maybeData = findBy(data, hasChild(new LeafNode("c", "1")));
+        assertThat(maybeData.isPresent()).isTrue();
+        Optional<Node> maybeData2 = maybeData.get().find("b.g.d");
+        assertThat(maybeData2.isPresent()).isTrue();
+        Assertions.assertThat(maybeData2.get().getValue()).isEqualTo("2");
     }
 
     @Test
@@ -125,7 +140,7 @@ class TreeTest {
         data.insert("a.b.t", "2");
         data.insert("a.c.t", "3");
         Map<String, String> caches = new HashMap<>();
-        data.apply(CachePropertiesUtils.subtrees(CachePropertiesUtils.hasChild("t"))).forEach(t -> t.apply((n, c) -> {
+        data.apply(split(CachePropertiesUtils.hasChild("t"))).forEach(t -> t.apply((n, c) -> {
             if (n.isLeaf()) {
                 String key = n.getParent().getKey();
                 String cache = String.valueOf(n.getValue());

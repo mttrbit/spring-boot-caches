@@ -2,6 +2,7 @@ package spring.caches.backend.properties.tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -15,21 +16,31 @@ public final class CachePropertiesUtils {
     private CachePropertiesUtils() {
     }
 
-    public static Function<CachesProperties.Data, CachesProperties.Data> subtree(Function<Node, Boolean> condition) {
-        return tree ->
-                tree.apply(collectIf(condition), new ArrayList<>()).stream()
-                        .map(CachesProperties.Data::of)
-                        .findFirst()
-                        .orElse(CachesProperties.Data.empty());
+    public static Function<CachesProperties.Data, CachesProperties.Data> slice(Function<Node, Boolean> condition) {
+        return tree -> {
+            List<CachesProperties.Data> data = split(tree, condition);
+            return data.isEmpty() ? CachesProperties.Data.empty() : data.get(0);
+        };
     }
 
-    public static Function<CachesProperties.Data, List<CachesProperties.Data>> subtrees(
+    /**
+     * Divides the properties into n parts ( n >= 0 ) based on the given condition.
+     */
+    public static Function<CachesProperties.Data, List<CachesProperties.Data>> split(
             Function<Node, Boolean> condition
     ) {
-        return tree ->
-                tree.apply(collectIf(condition), new ArrayList<>()).stream()
-                        .map(CachesProperties.Data::of)
-                        .collect(Collectors.toList());
+        return tree -> split(tree, condition);
+    }
+
+    public static Optional<CachesProperties.Data> findBy(CachesProperties.Data data, Function<Node, Boolean> condition) {
+        return data.apply(collectIf(condition), new ArrayList<>()).stream().findFirst().map(CachesProperties.Data::of);
+    }
+
+    public static List<CachesProperties.Data> split(CachesProperties.Data data, Function<Node, Boolean> condition) {
+        return data.apply(collectIf(condition), new ArrayList<>())
+                .stream()
+                .map(CachesProperties.Data::of)
+                .collect(Collectors.toList());
     }
 
     public static Function<Node, Boolean> hasKey(String key) {
@@ -70,7 +81,7 @@ public final class CachePropertiesUtils {
 
     public static Function<Node, List<CachesProperties.Data>> toList(String key) {
         return n -> CachePropertiesUtils
-                .subtrees(node -> node.getKey().startsWith(key))
+                .split(node -> node.getKey().startsWith(key))
                 .apply(CachesProperties.Data.of(n));
     }
 

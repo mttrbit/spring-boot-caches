@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * BackendFactory for JCache
+ * BThis backend factory instantiates a very simple cache based on a {@link ConcurrentHashMap}.
  *
  * <p>When using Spring Cache's {@link DefaultPlatform}, this
  * factory will automatically be used if it is included on the classpath.
@@ -51,7 +51,7 @@ public class SimpleBackendFactory extends BackendFactory {
                 settings.put(name, builder);
             }
         });
-        
+
         return SimpleCacheBackend.of(settings);
     }
 
