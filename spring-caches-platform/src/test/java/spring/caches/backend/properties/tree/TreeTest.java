@@ -134,7 +134,7 @@ class TreeTest {
         split(data, hasChild("t")).forEach(t -> t.apply((n, c) -> {
             if (n.isLeaf()) {
                 String key = n.getParent().getKey();
-                String cache = String.valueOf(n.getValue());
+                String handlingNodesWithIndices = String.valueOf(n.getValue());
                 c.put(key, cache);
             }
         }, caches));
