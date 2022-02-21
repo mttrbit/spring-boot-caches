@@ -17,57 +17,58 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class TreeTest {
 
-    private Tree tree;
+    private CachesProperties.Data data;
 
     @BeforeEach
     public void init() {
-        tree = Tree.empty();
+        data = CachesProperties.Data.empty();
     }
 
     @Test
     public void abc() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.d", "2");
-        tree.insert("a.b.d", "3");
-        System.out.println(tree);
+        data.insert("a.b.c", "1");
+        data.insert("a.b.d", "2");
+        data.insert("a.b.d", "3");
+        System.out.println(data);
     }
 
     @Test
     public void countNodes() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.d", "2");
-        tree.insert("a.b.a", "3");
-        assertThat(tree.apply((node, context) -> context.incrementAndGet(), new AtomicInteger()).get()).isEqualTo(5);
+        data.insert("a.b.c", "1");
+        data.insert("a.b.d", "2");
+        data.insert("a.b.a", "3");
+        assertThat(data.apply((node, context) -> context.incrementAndGet(), new AtomicInteger()).get()).isEqualTo(5);
     }
 
     @Test
     public void collectLeafs() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.d", "2");
-        tree.insert("a.b.a", "3");
-        Assertions.assertThat(tree.apply(TreeUtils.collectIf(TreeUtils.isLeaf()), new ArrayList<>()).size()).isEqualTo(3);
+        data.insert("a.b.c", "1");
+        data.insert("a.b.d", "2");
+        data.insert("a.b.a", "3");
+        Assertions.assertThat(data.apply(CachePropertiesUtils.collectIf(CachePropertiesUtils.isLeaf()), new ArrayList<>()).size()).isEqualTo(3);
     }
 
     @Test
     public void handlingNodesWIthIndeces() {
-        tree.insert("a.b[0].a", "1");
-        tree.insert("a.b[0].b", "2");
-        tree.insert("a.b[1].a", "3");
-        tree.insert("a.b[1].b", "4");
-        List<Node> nodes = tree.apply(TreeUtils.collectIf(TreeUtils.isArrayNode()), new ArrayList<>());
+        data.insert("a.b[0].a", "1");
+        data.insert("a.b[0].b", "2");
+        data.insert("a.b[1].a", "3");
+        data.insert("a.b[1].b", "4");
+        List<Node> nodes = data.apply(CachePropertiesUtils.collectIf(CachePropertiesUtils.isArrayNode()), new ArrayList<>());
         assertThat(nodes.size()).isEqualTo(2);
         assertThat(nodes.toString()).isEqualTo("[(b[0],[(a=1), (b=2)]), (b[1],[(a=3), (b=4)])]");
     }
+
     @Test
     public void traverse() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.d", "2");
-        tree.insert("a.b.d", "3");
-        Properties props = tree.apply((node, context) -> {
+        data.insert("a.b.c", "1");
+        data.insert("a.b.d", "2");
+        data.insert("a.b.d", "3");
+        Properties props = data.apply((node, context) -> {
             if (node instanceof LeafNode) {
                 context.put(
                         StreamSupport.stream(node.path(), false).collect(Collectors.joining(".")),
-                        ((LeafNode) node).getValue()
+                        node.getValue()
                 );
             }
         }, new Properties());
@@ -76,20 +77,20 @@ class TreeTest {
 
     @Test
     public void findFirstSubTree() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.d", "2");
-        tree.insert("a.e.d", "3");
-        Tree subTree = tree.apply(TreeUtils.subtree(TreeUtils.hasKey("d")));
+        data.insert("a.b.c", "1");
+        data.insert("a.b.d", "2");
+        data.insert("a.e.d", "3");
+        CachesProperties.Data subTree = data.apply(CachePropertiesUtils.subtree(CachePropertiesUtils.hasKey("d")));
         assertThat(subTree.find("d").isPresent()).isTrue();
         assertThat(subTree.find("d").get().toString()).isEqualTo("(d=2)");
     }
 
     @Test
     public void findSubTrees() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.d", "2");
-        tree.insert("a.e.d", "3");
-        List<Tree> trees = tree.apply(TreeUtils.subtrees(TreeUtils.hasKey("d")));
+        data.insert("a.b.c", "1");
+        data.insert("a.b.d", "2");
+        data.insert("a.e.d", "3");
+        List<CachesProperties.Data> trees = data.apply(CachePropertiesUtils.subtrees(CachePropertiesUtils.hasKey("d")));
         assertThat(trees.size()).isEqualTo(2);
         assertThat(trees.get(0).toString()).isEqualTo("(d=2)");
         assertThat(trees.get(1).toString()).isEqualTo("(d=3)");
@@ -97,34 +98,34 @@ class TreeTest {
 
     @Test
     public void findNode() {
-        tree.insert("a.b.g.d", "2");
-        assertThat(tree.find("a.b.g.d").isPresent()).isTrue();
+        data.insert("a.b.g.d", "2");
+        assertThat(data.find("a.b.g.d").isPresent()).isTrue();
     }
 
     @Test
     public void findNode2() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.g.d", "2");
-        tree.insert("a.e.d", "3");
-        Assertions.assertThat(tree.apply(TreeUtils.subtree(TreeUtils.hasChild(new LeafNode("c", "1"))), TreeUtils.valueOf("b.g.d"))).isEqualTo("2");
+        data.insert("a.b.c", "1");
+        data.insert("a.b.g.d", "2");
+        data.insert("a.e.d", "3");
+        Assertions.assertThat(data.apply(CachePropertiesUtils.subtree(CachePropertiesUtils.hasChild(new LeafNode("c", "1"))), CachePropertiesUtils.valueOf("b.g.d"))).isEqualTo("2");
     }
 
     @Test
     public void findAll() {
-        tree.insert("a.b.c", "1");
-        tree.insert("a.b.d", "2");
-        tree.insert("a.e.d", "3");
-        tree.insert("a.f.c", "1");
-        Assertions.assertThat(tree.apply(TreeUtils.collectIf(TreeUtils.hasChild(new LeafNode("c", "1"))), new ArrayList<>()).size()).isEqualTo(2);
+        data.insert("a.b.c", "1");
+        data.insert("a.b.d", "2");
+        data.insert("a.e.d", "3");
+        data.insert("a.f.c", "1");
+        Assertions.assertThat(data.apply(CachePropertiesUtils.collectIf(CachePropertiesUtils.hasChild(new LeafNode("c", "1"))), new ArrayList<>()).size()).isEqualTo(2);
     }
 
     @Test
     public void findAll2() {
-        tree.insert("a.a.t", "1");
-        tree.insert("a.b.t", "2");
-        tree.insert("a.c.t", "3");
+        data.insert("a.a.t", "1");
+        data.insert("a.b.t", "2");
+        data.insert("a.c.t", "3");
         Map<String, String> caches = new HashMap<>();
-        tree.apply(TreeUtils.subtrees(TreeUtils.hasChild("t"))).forEach(t -> t.apply((n, c) -> {
+        data.apply(CachePropertiesUtils.subtrees(CachePropertiesUtils.hasChild("t"))).forEach(t -> t.apply((n, c) -> {
             if (n.isLeaf()) {
                 String key = n.getParent().getKey();
                 String cache = String.valueOf(n.getValue());

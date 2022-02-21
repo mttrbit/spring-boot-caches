@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.auto.service.AutoService;
 import spring.caches.backend.CacheBackend;
 import spring.caches.backend.properties.tree.CachesProperties;
-import spring.caches.backend.properties.tree.Tree;
 import spring.caches.backend.system.BackendFactory;
 import spring.caches.backend.system.DefaultPlatform;
 
@@ -28,18 +27,17 @@ public class CaffeineBackendFactory extends BackendFactory {
 
     // Constructs a new caffeine cache instance. If there is no cache configuration
     // provided, the default values as defined by caffeine will be used.
-    // Simplify -> Optional<String> maybeValue = props.getValue(BACKEND_NAME + ".config.spec", String.class)
-    private static Caffeine<Object, Object> findSpec(Tree t) {
+    private static Caffeine<Object, Object> findSpec(CachesProperties.Data t) {
         return t
-                .getValue(BACKEND_NAME + ".config.spec", String.class)
+                .getValue(".config.spec", String.class)
                 .map(Caffeine::from)
                 .orElse(Caffeine.newBuilder());
     }
 
 
-    private static List<String> findNames(Tree t) {
+    private static List<String> findNames(CachesProperties.Data t) {
         return t
-                .getValue(BACKEND_NAME + ".names", String.class)
+                .getValue(".names", String.class)
                 .map(CaffeineBackendFactory::split)
                 .orElse(Collections.emptyList());
     }
@@ -51,10 +49,9 @@ public class CaffeineBackendFactory extends BackendFactory {
     @Override
     public CacheBackend create(CachesProperties properties) {
         Map<String, Caffeine<Object, Object>> settings = new ConcurrentHashMap<>(16);
-
-        properties.consume(t -> {
-            Caffeine<Object, Object> builder = findSpec(t);
-            for (String name : findNames(t)) {
+        properties.consume(data -> {
+            Caffeine<Object, Object> builder = findSpec(data);
+            for (String name : findNames(data)) {
                 settings.put(name, builder);
             }
         });

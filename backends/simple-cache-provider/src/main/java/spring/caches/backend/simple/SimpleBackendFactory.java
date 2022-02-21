@@ -3,7 +3,6 @@ package spring.caches.backend.simple;
 import com.google.auto.service.AutoService;
 import spring.caches.backend.CacheBackend;
 import spring.caches.backend.properties.tree.CachesProperties;
-import spring.caches.backend.properties.tree.Tree;
 import spring.caches.backend.system.BackendFactory;
 import spring.caches.backend.system.DefaultPlatform;
 
@@ -27,15 +26,14 @@ public class SimpleBackendFactory extends BackendFactory {
 
     // Constructs a new simple cache instance. If there is no cache configuration
     // provided, the default values as defined by simple will be used.
-    // TODO do not return Simple, return SimpleConfig
-    private static Simple findSpec(Tree t) {
-        return t.getValue(BACKEND_NAME + ".config.spec", String.class)
+    private static Simple findSpec(CachesProperties.Data data) {
+        return data.getValue(".config.spec", String.class)
                 .map(Simple::from)
                 .orElse(Simple.newBuilder());
     }
 
-    private static List<String> findNames(Tree t) {
-        return t.getValue(BACKEND_NAME + ".names", String.class)
+    private static List<String> findNames(CachesProperties.Data data) {
+        return data.getValue(".names", String.class)
                 .map(SimpleBackendFactory::split)
                 .orElse(Collections.emptyList());
     }
@@ -47,12 +45,13 @@ public class SimpleBackendFactory extends BackendFactory {
     @Override
     public CacheBackend create(CachesProperties properties) {
         Map<String, Simple> settings = new ConcurrentHashMap<>(16);
-        properties.consume(t -> {
-            Simple builder = findSpec(t).recordStats();
-            for (String name : findNames(t)) {
+        properties.consume(data -> {
+            Simple builder = findSpec(data).recordStats();
+            for (String name : findNames(data)) {
                 settings.put(name, builder);
             }
         });
+        
         return SimpleCacheBackend.of(settings);
     }
 

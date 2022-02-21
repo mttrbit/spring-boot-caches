@@ -10,23 +10,25 @@ import java.util.stream.Collectors;
  * properties.
  */
 @SuppressWarnings({"PMD.LinguisticNaming", "PMD.SuspiciousEqualsMethodName"})
-public final class TreeUtils {
+public final class CachePropertiesUtils {
 
-    private TreeUtils() {
+    private CachePropertiesUtils() {
     }
 
-    public static Function<Tree, Tree> subtree(Function<Node, Boolean> condition) {
+    public static Function<CachesProperties.Data, CachesProperties.Data> subtree(Function<Node, Boolean> condition) {
         return tree ->
                 tree.apply(collectIf(condition), new ArrayList<>()).stream()
-                        .map(Tree::of)
+                        .map(CachesProperties.Data::of)
                         .findFirst()
-                        .orElse(Tree.empty());
+                        .orElse(CachesProperties.Data.empty());
     }
 
-    public static Function<Tree, List<Tree>> subtrees(Function<Node, Boolean> condition) {
+    public static Function<CachesProperties.Data, List<CachesProperties.Data>> subtrees(
+            Function<Node, Boolean> condition
+    ) {
         return tree ->
                 tree.apply(collectIf(condition), new ArrayList<>()).stream()
-                        .map(Tree::of)
+                        .map(CachesProperties.Data::of)
                         .collect(Collectors.toList());
     }
 
@@ -66,14 +68,20 @@ public final class TreeUtils {
         };
     }
 
+    public static Function<Node, List<CachesProperties.Data>> toList(String key) {
+        return n -> CachePropertiesUtils
+                .subtrees(node -> node.getKey().startsWith(key))
+                .apply(CachesProperties.Data.of(n));
+    }
+
     public static NodeHandler<List<Node>> collect() {
         return (node, context) -> context.add(node);
     }
 
-    public static Function<Tree, Object> valueOf(String path) {
+    public static Function<CachesProperties.Data, Object> valueOf(String path) {
         return tree -> tree.find(path)
                 .filter(n -> n instanceof LeafNode)
-                .map(n -> ((LeafNode) n).getValue())
+                .map(Node::getValue)
                 .orElse(null);
     }
 
